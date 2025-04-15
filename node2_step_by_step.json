@@ -1,0 +1,2498 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $json.message.chat.id }}"
+      },
+      "id": "6fd5a7b5-7bfc-4095-9bb7-017e750ff0d3",
+      "name": "SendTyping",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        -2220,
+        200
+      ],
+      "webhookId": "e3b33752-d6d3-4c3f-bfa5-5e8698a7c592",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "A4s1mN5Xt14Ju6Sc",
+          "name": "price test bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ecb3515-c1a2-4d69-adec-5b4d74e32056",
+              "name": "inputMessage",
+              "type": "string",
+              "value": "={{ $json.chatInput }}"
+            },
+            {
+              "id": "424b9697-94cb-4c38-953c-992436832684",
+              "name": "chatId",
+              "type": "string",
+              "value": "={{ $json.sessionId }}"
+            },
+            {
+              "id": "e23988e2-7c3d-4e38-9d5d-0c4b0c94d127",
+              "name": "mode",
+              "type": "string",
+              "value": "n8n"
+            },
+            {
+              "id": "459e437d-e268-41ab-a07f-7aee13e39cce",
+              "name": "history",
+              "value": "{}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "20fdda50-d2f8-4ceb-ad89-6b892a54c0d1",
+      "name": "n8nChatSettings",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -2060,
+        20
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ecb3515-c1a2-4d69-adec-5b4d74e32056",
+              "name": "inputMessage",
+              "type": "string",
+              "value": "={{ $('input').item.json.message.text }}"
+            },
+            {
+              "id": "424b9697-94cb-4c38-953c-992436832684",
+              "name": "chatId",
+              "type": "string",
+              "value": "={{ $('input').item.json.message.chat.id }}"
+            },
+            {
+              "id": "e23988e2-7c3d-4e38-9d5d-0c4b0c94d127",
+              "name": "mode",
+              "type": "string",
+              "value": "telegram"
+            },
+            {
+              "id": "0161989e-1b1f-4b99-a9a6-f7366f88c550",
+              "name": "history",
+              "value": "{}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5e7d7026-67a2-4dd3-b13b-f595a22e0079",
+      "name": "telegramChatSettings",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -2060,
+        200
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "id": "efdce5f7-0cd2-42fd-9f3c-c68c1c24f506",
+      "name": "n8nInput",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        -2380,
+        20
+      ],
+      "webhookId": "32a9ac79-5ae7-473b-9fc4-44ef1356016d",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "d93bee32-66ed-45b2-80fe-2e680eb3f238",
+      "name": "input",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "position": [
+        -2380,
+        200
+      ],
+      "webhookId": "2c13015c-14dd-4d00-a81b-3ab5811e181d",
+      "typeVersion": 1.1,
+      "credentials": {
+        "telegramApi": {
+          "id": "A4s1mN5Xt14Ju6Sc",
+          "name": "price test bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ecb3515-c1a2-4d69-adec-5b4d74e32056",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $json.inputMessage }}"
+            },
+            {
+              "id": "424b9697-94cb-4c38-953c-992436832684",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $json.chatId }}"
+            },
+            {
+              "id": "e23988e2-7c3d-4e38-9d5d-0c4b0c94d127",
+              "name": "mode",
+              "type": "string",
+              "value": "={{ $json.mode }}"
+            },
+            {
+              "id": "267cb675-e520-4c69-ab22-8373ceca62c2",
+              "name": "history",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8bf24a89-7f62-4070-84ee-02bd7eae3b57",
+      "name": "join settings",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -1820,
+        100
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('join settings').item.json.chatInput }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=# Identidad:\nEres un asistente virtual especializado en ayudar a los usuarios a encontrar el mejor precio para su medicamento. Tu objetivo es recopilar todos los datos necesarios de forma clara y eficiente, utiliza el historial de conversacion para recordar la informacion que el usuario ya te proporcionó, evitar redundancias y mantener un flujo natural. Eres amables, paciente, cordial, saludas al usuario con mensajes amables, empatico y lo llevas por un proceso de preguntas fluido para obtener los datos requeridos obligatorio. Ademas puedes usar emoji para enriquecer las respuestas/preguntas.\n\n# Datos requeridos (todos obligatorios):\nDebes obtener los siguientes datos del usuario, sin excepciones:\n1. Nombre del medicamento\n2. Dosis\n3. Presentación\n4. Ciudad\n\n# Capacidades, habilidades:\n- Puede identificar si el medicamento que te piden realmente es un medicamento.\n- Verificar, sugerir, confirmar gramatica del medicamento requerido.\n\n# Historial del conversación:\n{{ $('get_chat_history').item.json.toJsonString() }}\n\n\n"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        -1280,
+        100
+      ],
+      "id": "6c8afd1c-08da-4fda-8962-98df87179207",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-pro-exp",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1260,
+        340
+      ],
+      "id": "b6e37bee-8c2f-4a24-9f24-a4a5d2390c55",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('join settings').item.json.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -940,
+        340
+      ],
+      "id": "d7151b8b-4639-491f-b131-af538ca19124",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres tests"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('join settings').item.json.sessionId }}",
+        "contextWindowLength": 200
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1600,
+        340
+      ],
+      "id": "0120f36d-550a-4a53-bef6-6268e32b7ed6",
+      "name": "Postgres Chat Memory1",
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres tests"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"nextMessage\": {\n      \"type\": \"string\"\n    },\n    \"isReady\": {\n      \"type\": \"boolean\"\n    },\n    \"inputs\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"nombre_medicamento\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"ciudad\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"dosis\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"presentacion\": {\n          \"type\": [\"string\", \"null\"]\n        }\n      }\n    }\n  },\n  \"required\": [\"nextMessage\", \"isReady\", \"inputs\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -1100,
+        340
+      ],
+      "id": "5304c6b2-9f22-4e7e-8d19-b747b043654e",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('join_data_ready_case').item.json.mode }}",
+                    "rightValue": "=n8n",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "5cb743b4-6a8a-4548-8ef2-73f0b6d495e0"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "n8n response"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b967cac9-8c0f-404b-b7f8-c8bfd56de865",
+                    "leftValue": "={{ $('join_data_ready_case').item.json.mode }}",
+                    "rightValue": "telegram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "telegram"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        440,
+        160
+      ],
+      "id": "cedfad7a-576f-4f0f-b09c-501ecd271028",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4d71ef01-2a28-410b-b1a3-4238a7e632c1",
+              "name": "query",
+              "value": "={{ $('Basic LLM Chain').item.json.output.inputs.nombre_medicamento }} {{ $('Basic LLM Chain').item.json.output.inputs.dosis }} {{ $('Basic LLM Chain').item.json.output.inputs.presentacion }} {{ $('Basic LLM Chain').item.json.output.inputs.ciudad }}",
+              "type": "string"
+            },
+            {
+              "id": "0ca2db20-db2e-4d67-b5bd-b3be0e8c2223",
+              "name": "inputs",
+              "value": "={{ $('Basic LLM Chain').item.json.output.inputs }}",
+              "type": "object"
+            },
+            {
+              "id": "14c5f3bf-e7b1-45c9-bf5c-b49bd2268a70",
+              "name": "chatId",
+              "value": "={{ $('join settings').item.json.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "d91f68ed-2fc5-46dc-a106-730ddd435a48",
+              "name": "sessionId",
+              "value": "={{ $('join settings').item.json.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "5e917817-d54c-45df-ac8d-f346f7250c16",
+              "name": "mode",
+              "value": "={{ $('join settings').item.json.mode }}",
+              "type": "string"
+            },
+            {
+              "id": "04a23511-b744-4845-96a6-5ab9548c7f0b",
+              "name": "feedback_message",
+              "value": "¡Espera un momento mientras proceso tu solicitud! ⏳😊",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        40,
+        -40
+      ],
+      "id": "3c2e8bce-6e06-4d99-9680-1b72c0efd720",
+      "name": "join_data_ready_case"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dd5afeae-c964-4b10-b373-707050309d22",
+              "name": "output",
+              "value": "={{ $('Basic LLM Chain').item.json.output.nextMessage }}",
+              "type": "string"
+            },
+            {
+              "id": "a5f711eb-c1cc-4afd-9689-16555b392306",
+              "name": "mode",
+              "value": "={{ $('join settings').item.json.mode }}",
+              "type": "string"
+            },
+            {
+              "id": "ae3041f3-8995-4a9d-b848-8aa4f86adef5",
+              "name": "chatId",
+              "value": "={{ $('join settings').item.json.sessionId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -120,
+        380
+      ],
+      "id": "80967b25-dfe2-48ca-b054-a9fe56fb9944",
+      "name": "join_data_no_ready_case"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Basic LLM Chain').item.json.output.isReady }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "b1798758-99cb-4d60-8431-66c3cf2e5ded"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "no loop"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "319b83e8-1e96-412f-ba12-2125eb93bcc0",
+                    "leftValue": "={{ $('Basic LLM Chain').item.json.output.isReady }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "false",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "loop"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -460,
+        160
+      ],
+      "id": "924cb7ef-5f05-41c3-8a89-460079595340",
+      "name": "isReady"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.mode }}",
+                    "rightValue": "telegram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "da4ea7c1-a125-48bc-80c9-8fd60621c3e4"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "telegram response"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "25cba0e9-e79b-4e25-b469-4ced0320198f",
+                    "leftValue": "={{ $json.mode }}",
+                    "rightValue": "n8n",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "n8n response"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -80,
+        620
+      ],
+      "id": "4986d441-f697-4112-9b82-5ce7067daa2d",
+      "name": "response_channel"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        120,
+        560
+      ],
+      "id": "47d2af77-fe04-4bae-a69b-e08117b7c872",
+      "name": "TelegramResponseLoop",
+      "webhookId": "f0af7b9e-bb16-4459-ad5a-cf2db7cfbafd",
+      "credentials": {
+        "telegramApi": {
+          "id": "A4s1mN5Xt14Ju6Sc",
+          "name": "price test bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "groupMessages": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryManager",
+      "typeVersion": 1.1,
+      "position": [
+        -1620,
+        100
+      ],
+      "id": "96ef0fe4-9ac6-4641-a2af-e49b00a06182",
+      "name": "get_chat_history",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "ai",
+              "message": "={{ $json.output.nextMessage }}",
+              "hideFromUI": true
+            },
+            {
+              "type": "user",
+              "message": "={{ $('join settings').item.json.chatInput }}",
+              "hideFromUI": true
+            },
+            {
+              "message": "={{ $json.output.inputs }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryManager",
+      "typeVersion": 1.1,
+      "position": [
+        -960,
+        100
+      ],
+      "id": "57399649-8f6a-49db-9eaa-3c340a432726",
+      "name": "save_chat_history",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        120,
+        740
+      ],
+      "id": "ca9dba00-1c89-4692-898a-315f9d50ef06",
+      "name": "n8n_response_loop"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('join_data_ready_case').item.json.chatId }}",
+        "text": "={{ $json.feedback_message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        740,
+        20
+      ],
+      "id": "0a14baa3-6156-4bda-b42b-23a91767315e",
+      "name": "send_created_process_message",
+      "webhookId": "1e5b07f3-4c6b-4745-81cd-6a3e109fd931",
+      "credentials": {
+        "telegramApi": {
+          "id": "A4s1mN5Xt14Ju6Sc",
+          "name": "price test bot"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        740,
+        -160
+      ],
+      "id": "50ab85d8-5885-4280-a395-c14f8e0229b0",
+      "name": "send_created_process_message_n8n"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "98ab9450-9835-4530-b565-c89d27c7e168",
+              "name": "q",
+              "value": "={{ $('join_data_ready_case').item.json.query }}",
+              "type": "string"
+            },
+            {
+              "id": "0ba2bccd-b131-44d8-863d-9438e8150f31",
+              "name": "inputs",
+              "value": "={{ $('join_data_ready_case').item.json.inputs }}",
+              "type": "object"
+            },
+            {
+              "id": "81c56059-e62a-4ff3-94f2-e816e22d6e3c",
+              "name": "chatId",
+              "value": "={{ $('join_data_ready_case').item.json.chatId }}",
+              "type": "string"
+            },
+            {
+              "id": "f3c14dfd-e354-432e-83ef-ca135dcd0b8c",
+              "name": "sessionId",
+              "value": "={{ $('join_data_ready_case').item.json.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "be039ab2-aaba-4d51-b1d2-d78fc0b8188a",
+              "name": "mode",
+              "value": "={{ $('join_data_ready_case').item.json.mode }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        300
+      ],
+      "id": "93414e87-e4e9-4ce7-a2ef-294a9741be20",
+      "name": "join_params"
+    },
+    {
+      "parameters": {
+        "content": "# Todos los parámetros \n- Se tienen todo los parámetros  para procesar la solicitud de usuario mensaje.\n- Se borra el histórico de la conversación de esa iteración. (porque se usa como contexto, mantenerlo haría creer al agente que tiene los datos y son de interacciones  anteriores) ",
+        "height": 560,
+        "width": 520
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        -420
+      ],
+      "id": "a9dcddee-8bd8-49d3-9ef8-e28df03580a0",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# No se tiene todo los parámetros \n- Se envía  el feed back del modelo que determina si ya se tienen todo los datos.",
+        "height": 720,
+        "width": 520,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        180
+      ],
+      "id": "595fb5d4-d92e-4e45-b377-3a394ed8e590",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Captura de datos principal \n- Se reciben los input del usuario.\n- Se solicitan y guardan los mensajes y estado de los parámetros capturados.",
+        "height": 620,
+        "width": 1780,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2420,
+        -140
+      ],
+      "id": "0e3a0119-e7fa-4e8b-9041-14cf14431486",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Estan los datos completos?\n- Basado en la estructura que devuelve  el modelo, se elige el camino a seguir. Se realimenta al usuario con la respuesta del modelo o se pasa al procesamiento de los datos.",
+        "height": 620,
+        "width": 380
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        -140
+      ],
+      "id": "8cc73654-c258-4122-b80f-4cf50bdb2b89",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_chat_histories",
+          "mode": "list",
+          "cachedResultName": "n8n_chat_histories"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{ $('join settings').item.json.sessionId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        40,
+        -220
+      ],
+      "id": "fdb4824e-24af-4728-8c46-9a05ee03bd13",
+      "name": "delete_history_iteractions",
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres tests"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "user_queries",
+          "mode": "list",
+          "cachedResultName": "user_queries"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query_full": "={{ $('join_data_ready_case').item.json.query }}",
+            "medicine_nmae": "={{ $('join_data_ready_case').item.json.inputs.nombre_medicamento }}",
+            "city": "={{ $('join_data_ready_case').item.json.inputs.ciudad }}",
+            "presentation": "={{ $('join_data_ready_case').item.json.inputs.presentacion }}",
+            "dosage": "={{ $('join_data_ready_case').item.json.inputs.dosis }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "query_full",
+              "displayName": "query_full",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "medicine_nmae",
+              "displayName": "medicine_nmae",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "dosage",
+              "displayName": "dosage",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "presentation",
+              "displayName": "presentation",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        700,
+        580
+      ],
+      "id": "5787a836-46f9-4635-8414-3e688303d2ec",
+      "name": "save_user_query",
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres tests"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1420,
+        340
+      ],
+      "id": "ecba2665-c97a-4b64-a79f-bd22a4a7fab3",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "6VtbdaMJgLBwgOKL",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.searchapi.io/api/v1/search?api_key=5Fj32Kv6gLq43ahAZLm1Gh1P&engine=google",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json.q }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1400,
+        140
+      ],
+      "id": "097a0d84-0c33-4d0c-9b8b-cab0b411c759",
+      "name": "Search api request"
+    },
+    {
+      "parameters": {
+        "url": "https://api.search.brave.com/res/v1/web/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json.q }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            },
+            {
+              "name": "X-Subscription-Token",
+              "value": "BSA1iaIh6uGAmS0mnpR1lMktIrrOM0g"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1400,
+        340
+      ],
+      "id": "a8397be0-1810-492b-b1e7-a1caad07df75",
+      "name": "brave api request"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1640,
+        240
+      ],
+      "id": "2e089fed-3ced-4361-9216-f647b5e53f48",
+      "name": "merge_queries"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://opryduogwuicddhqmgba.supabase.co/functions/v1/bara_price_multi_fetchs",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "urls",
+              "value": "={{ $json.allowUrls }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2360,
+        240
+      ],
+      "id": "942248bd-6e57-4f35-ae9b-0934764ad63a",
+      "name": "HTTP Request",
+      "executeOnce": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YGLOgacByF7Iy8bS",
+          "name": "bara_price_multi_fetchs auth header"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "# Retroalimentación al usuario\n- Se envía mensaje de procesamiento al usuario.\n- Se divide las respuestas en canales dependiendo de donde proviene el ",
+        "height": 740,
+        "width": 620,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        380,
+        -340
+      ],
+      "id": "f3f35b14-301d-45dc-b036-eab775e4a1c2",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "# Retroalimentación al usuario\n- Se envía mensaje de procesamiento al usuario.",
+        "height": 620,
+        "width": 660,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3020,
+        -1280
+      ],
+      "id": "7d6cb767-a22b-4791-88b6-1b7726d11599",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "# Guardando query\n- Sea almacena en la db datos relacionados con la busqueda del cliente",
+        "height": 320,
+        "width": 620,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        380,
+        440
+      ],
+      "id": "343e5469-8c20-4359-94c3-e4d2f616c615",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "# Remap\n- Se hace un remap de los datos para unirlos y no ir tantos nodos atrás  cuando se necesitan\n",
+        "height": 540,
+        "width": 260
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        40
+      ],
+      "id": "3196cde1-2fa5-4974-a16c-74a20024c9bb",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "# Procesamiento de query, requests",
+        "height": 540,
+        "width": 2360,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        40
+      ],
+      "id": "67e9dff4-66ee-478e-980a-25be990335b4",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('remap_to_channels').item.json.chatId }}",
+        "text": "={{ $('remap_to_channels').item.json.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3440,
+        -1180
+      ],
+      "id": "d93e755e-c457-4cbe-b1d2-7009d08cb319",
+      "name": "Telegram",
+      "webhookId": "5ec111a7-fbc4-4f4f-99e7-f44a0e6566e1",
+      "credentials": {
+        "telegramApi": {
+          "id": "A4s1mN5Xt14Ju6Sc",
+          "name": "price test bot"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3480,
+        -820
+      ],
+      "id": "20f3d844-e3fd-4fa0-8a3e-c13c43590fd7",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.mode }}",
+                    "rightValue": "telegram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c0e21f41-e589-42b6-bd15-25f817f0beac"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "telegram"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "59989dcd-d078-4526-a4af-248606674692",
+                    "leftValue": "={{ $json.mode }}",
+                    "rightValue": "n8n",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "n8n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3120,
+        -900
+      ],
+      "id": "a46780fe-5017-47ff-8639-b0e5ec709a19",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "37d9216b-d8c9-4335-9f5d-5a0e09b0e060",
+              "name": "message",
+              "value": "=⏳ Encontramos {{ $json.allowUrls.length }} fuentes relacionadas con tu busqueda. Voy a refinarlos para tí. Regalame unos minutos por favor. 🤩🙏",
+              "type": "string"
+            },
+            {
+              "id": "04533bb3-cf21-466e-9287-6f81ba9c27b2",
+              "name": "mode",
+              "value": "={{ $('join_params').first().json.mode }}",
+              "type": "string"
+            },
+            {
+              "id": "5b7f3dc2-71a8-4dcb-bfe9-949c01480c11",
+              "name": "chatId",
+              "value": "={{ $('join_params').first().json.chatId }}",
+              "type": "string"
+            },
+            {
+              "id": "8879b261-1b1e-4fdb-8a52-6dfaa595a2bd",
+              "name": "q",
+              "value": "={{ $('join_params').first().json.q }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3060,
+        -1140
+      ],
+      "id": "008124c0-6eda-46bc-808d-190fa57b57ac",
+      "name": "remap_to_channels",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d607140d-f2ba-43a0-a33d-af2d8b95f92a",
+              "name": "output",
+              "value": "={{ $('remap_to_channels').item.json.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3320,
+        -960
+      ],
+      "id": "6d588d6b-196c-408b-8b57-5e1f8bca954f",
+      "name": "map_output_n8n_channel"
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $('remap_to_channels').item.json.chatId }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3280,
+        -1160
+      ],
+      "id": "82c62aac-864a-47e6-ad6d-4bd96b2193ff",
+      "name": "Telegram1",
+      "webhookId": "3fc588e6-c61a-4b3c-ab49-79c5093cf047",
+      "credentials": {
+        "telegramApi": {
+          "id": "A4s1mN5Xt14Ju6Sc",
+          "name": "price test bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const regex = /^(https?:\\/\\/)(www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(\\/[^\\/\\s].*)?$/\nconst googleSearch = $input.item.json.organic_results\nconst braveSearch = $input.item.json.web.results\nconst googleUrls = googleSearch.map((search) => search.link)\nconst braveUrls = braveSearch.map((search) => search.url)\nconst urls = [...googleUrls, ...braveUrls]\nconst filterUrls = urls.filter((url) => regex.test(url))\n\nreturn { filterUrls };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1820,
+        380
+      ],
+      "id": "8cd077d6-9b1f-431f-b6d8-8b37d66b8109",
+      "name": "extract_urls"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-pro-exp",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2740,
+        420
+      ],
+      "id": "cb31e61a-8a36-4254-a0e9-50153e4c7d12",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"url\": {\n      \"type\": [\"string\", \"null\"]\n    },\n    \"precio\": {\n      \"type\": [\"number\", \"null\"]\n    },\n    \"nombre\": {\n      \"type\": [\"string\", \"null\"]\n    }\n  },\n  \"required\": [\"precio\", \"nombre\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        2900,
+        420
+      ],
+      "id": "b909dbde-e59d-4b77-ba6f-b35dd0fbd073",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "success",
+        "options": {
+          "destinationFieldName": "result"
+        }
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2520,
+        380
+      ],
+      "id": "1d299423-4df2-4781-a48a-63bc8608f2bd",
+      "name": "create_item_url_mdData"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={\n  \"url\": \"{{ $json.result.url }}\",\n  \"mdData\": \"{{ $json.result.data }}\"\n}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Extrae del markdown (mdData), el precio y el nombre del medicamento."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        2720,
+        180
+      ],
+      "id": "f73a9ffd-286d-4df2-8b2d-4a281e538945",
+      "name": "extract_price_name"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-pro-exp",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        3420,
+        400
+      ],
+      "id": "62de52e6-4d1e-464d-9eff-d0a2712e1037",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.result}}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Compara y extrae los tres precios mas baratos de entre las diferentes items.\n\n# reglas a respetar\n- no extraer, ni comparar precios que no este en moneda local de la ciudad.\n- Agrega la URL del medicamento.\n\n# Ciudad\n- {{ $('join_params').first().json.inputs.ciudad }}\n\nCiudad: {{ $('join_params').first().json.inputs.ciudad }}\n\n# Reglas a seguir\n- Por favor incluje el dominio (domain).\n- No repitas los precios."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        3360,
+        140
+      ],
+      "id": "aaf302ce-0899-45cc-a687-a6111c4eb07d",
+      "name": "compare_prices"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"precio1\": {\n      \"properties\": {\n        \"nombre\": {\n            \"type\": [\"string\", \"null\"]\n        },\n        \"precio\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"url\": [\"string\"],\n        \"domain\":  [\"string\"]\n      }\n    },\n    \"precio2\": {\n      \"properties\": {\n        \"nombre\": {\n            \"type\": [\"string\", \"null\"]\n        },\n        \"precio\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"url\": [\"string\"],\n        \"domain\":  [\"string\"]\n      }\n    },\n    \"precio3\": {\n      \"properties\": {\n        \"nombre\": {\n            \"type\": [\"string\", \"null\"]\n        },\n        \"precio\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"url\": [\"string\"],\n        \"domain\":  [\"string\"]\n      }\n    }\n  },\n  \"required\": [\"precio1\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        3580,
+        400
+      ],
+      "id": "7335ec9f-c1eb-4f49-8cc4-38e191727313",
+      "name": "Structured Output Parser3"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('join_params').first().json.chatId }}",
+        "text": "={{ $('final_message').item.json.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4320,
+        160
+      ],
+      "id": "d3e08930-0519-4a28-805a-a12c2525c937",
+      "name": "Telegram2",
+      "webhookId": "70da94b6-b4e8-469e-8541-144b59fcc3e6",
+      "credentials": {
+        "telegramApi": {
+          "id": "A4s1mN5Xt14Ju6Sc",
+          "name": "price test bot"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        4500,
+        400
+      ],
+      "id": "eaaaf55c-cbed-4624-997f-17ec64579464",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d607140d-f2ba-43a0-a33d-af2d8b95f92a",
+              "name": "output",
+              "value": "={{ $('result_message').item.json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4300,
+        400
+      ],
+      "id": "d306346a-29e6-4b71-85da-62c0ce084e42",
+      "name": "map_output_n8n_channel1"
+    },
+    {
+      "parameters": {
+        "content": "# Mensaje resultado",
+        "height": 540,
+        "width": 940,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3740,
+        40
+      ],
+      "id": "49d671e0-7a37-4df4-a5c3-cddcfc8c891b",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "pharmacy_for_city",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "city",
+              "condition": "eq",
+              "keyValue": "={{ $('join_params').item.json.inputs.ciudad.toLowerCase() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1960,
+        180
+      ],
+      "id": "ba28a382-c137-4f2f-baa4-7e4e81cdcd2e",
+      "name": "data_filter",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "hmzt7OOgWwOH4ZDl",
+          "name": "Supabase test price"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const filterUrl = $('extract_urls').first().json.filterUrls\nconst ourUrlsByCity = $('data_filter').all()\nconst newFilterUrlsResult = filterUrl.filter((webUrl) => {\n  return ourUrlsByCity.some((allowUrl) => \n    webUrl.includes(allowUrl.json.url)\n  )\n})\n\nreturn { allowUrls: newFilterUrlsResult }"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        180
+      ],
+      "id": "b8346dab-88cc-4850-8e3b-4b40f69c02bb",
+      "name": "filter_by_allow_urls"
+    },
+    {
+      "parameters": {
+        "content": "# Retroalimentación al usuario\n- Se envía mensaje de procesamiento al usuario.",
+        "height": 620,
+        "width": 660,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3020,
+        -620
+      ],
+      "id": "4a0745b3-7357-457b-a320-ebb4c3e0386b",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('remap_to_channels1').item.json.chatId }}",
+        "text": "={{ $('remap_to_channels1').item.json.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3440,
+        -520
+      ],
+      "id": "88a63aeb-5f64-41ba-8091-7f19a6fd587b",
+      "name": "Telegram4",
+      "webhookId": "5ec111a7-fbc4-4f4f-99e7-f44a0e6566e1",
+      "credentials": {
+        "telegramApi": {
+          "id": "A4s1mN5Xt14Ju6Sc",
+          "name": "price test bot"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3480,
+        -160
+      ],
+      "id": "01870485-806b-41a7-90a2-7517b2d55581",
+      "name": "No Operation, do nothing2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.mode }}",
+                    "rightValue": "telegram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c0e21f41-e589-42b6-bd15-25f817f0beac"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "telegram"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "59989dcd-d078-4526-a4af-248606674692",
+                    "leftValue": "={{ $json.mode }}",
+                    "rightValue": "n8n",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "n8n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3120,
+        -240
+      ],
+      "id": "44ff7d00-aa21-4cd5-a92b-70d34209bd50",
+      "name": "Switch3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "37d9216b-d8c9-4335-9f5d-5a0e09b0e060",
+              "name": "message",
+              "value": "=⏳ Estoy comparando los precios, ya casi termino, unos minutos mas por favor. 🤩",
+              "type": "string"
+            },
+            {
+              "id": "04533bb3-cf21-466e-9287-6f81ba9c27b2",
+              "name": "mode",
+              "value": "={{ $('join_params').first().json.mode }}",
+              "type": "string"
+            },
+            {
+              "id": "5b7f3dc2-71a8-4dcb-bfe9-949c01480c11",
+              "name": "chatId",
+              "value": "={{ $('join_params').first().json.chatId }}",
+              "type": "string"
+            },
+            {
+              "id": "8879b261-1b1e-4fdb-8a52-6dfaa595a2bd",
+              "name": "q",
+              "value": "={{ $('join_params').first().json.q }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3060,
+        -480
+      ],
+      "id": "c0f23def-4ad6-4512-9e29-981c7a56aa26",
+      "name": "remap_to_channels1",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d607140d-f2ba-43a0-a33d-af2d8b95f92a",
+              "name": "output",
+              "value": "={{ $('remap_to_channels1').item.json.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3320,
+        -300
+      ],
+      "id": "af9c8c58-7809-4089-9757-0834dd851a7e",
+      "name": "map_output_n8n_channel2"
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $('remap_to_channels1').item.json.chatId }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3280,
+        -500
+      ],
+      "id": "5f58c6f3-6cc4-4ad2-8109-a448572119b8",
+      "name": "Telegram5",
+      "webhookId": "3fc588e6-c61a-4b3c-ab49-79c5093cf047",
+      "credentials": {
+        "telegramApi": {
+          "id": "A4s1mN5Xt14Ju6Sc",
+          "name": "price test bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\nconst noNulls = $input.all().reduce((acc, el, idx) => {\n  if (\n    el.json.output.url &&\n    el.json.output.precio &&\n    el.json.output.nombre\n  ) {\n    const regex = /^(https?:\\/\\/)?([^\\/\\?\\#]+)/i;\n    const url =  $(\"create_item_url_mdData\")\n        .all()[idx]\n        .json\n        .result\n        .url\n    const match = url.match(regex);\n    return [...acc, {\n      url,\n      precio: el.json.output.precio,\n      nombre: el.json.output.nombre,\n      domain: match?.[2] ?? undefined\n    }]\n  }\n\n  return acc\n}, [])\n\nreturn { result: noNulls }"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3120,
+        280
+      ],
+      "id": "8a24762e-1e42-4b74-be85-d04a14f75bda",
+      "name": "remove_null_of_model_response",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dfe5392e-731b-4c37-8938-2ceb80eeabb4",
+              "name": "message",
+              "value": "=Listo! Encontre estos precios de {{ $('join_params').first().json.inputs.nombre_medicamento }} de {{ $('join_params').first().json.inputs.dosis }} en {{ $('join_params').first().json.inputs.presentacion }} para la ciudad: {{ $('join_params').first().json.inputs.ciudad }}.\n\n1️⃣ {{ $json.output.precio1.domain }}\n💊 Nombre: {{ $json.output.precio1.nombre }}\n💰 Precio: {{ $json.output.precio1.precio }}\n🔗 [ir a comprar]({{ $json.output.precio1.url }})\n\n2️⃣ {{ $json.output.precio2.domain }}\n💊 Nombre: {{ $json.output.precio2.nombre }}\n💰 Precio: {{ $json.output.precio2.precio }}\n🔗 [ir a comprar]({{ $json.output.precio2.url }})\n\n3️⃣ {{ $json.output.precio3.domain }}\n💊 Nombre: {{ $json.output.precio3.nombre }}\n💰 Precio: {{ $json.output.precio3.precio }}\n🔗 [ir a comprar]({{ $json.output.precio3.url }})\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3800,
+        120
+      ],
+      "id": "2512155a-8a9b-49e0-9f17-1b5b853d4c12",
+      "name": "final_message"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('join settings').first().json.mode }}",
+                    "rightValue": "telegram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c0e21f41-e589-42b6-bd15-25f817f0beac"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "telegram"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "59989dcd-d078-4526-a4af-248606674692",
+                    "leftValue": "={{ $('join settings').first().json.mode }}",
+                    "rightValue": "n8n",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "n8n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        4040,
+        260
+      ],
+      "id": "0684765e-302e-492a-b262-08c18c15a6f8",
+      "name": "final_channel_select"
+    }
+  ],
+  "connections": {
+    "SendTyping": {
+      "main": [
+        [
+          {
+            "node": "telegramChatSettings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8nChatSettings": {
+      "main": [
+        []
+      ]
+    },
+    "telegramChatSettings": {
+      "main": [
+        [
+          {
+            "node": "join settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8nInput": {
+      "main": [
+        [
+          {
+            "node": "n8nChatSettings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "input": {
+      "main": [
+        [
+          {
+            "node": "SendTyping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "join settings": {
+      "main": [
+        [
+          {
+            "node": "get_chat_history",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "save_chat_history",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "save_chat_history",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "get_chat_history",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "send_created_process_message_n8n",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "join_params",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send_created_process_message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "join_params",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "save_user_query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "join_data_ready_case": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "join_data_no_ready_case": {
+      "main": [
+        [
+          {
+            "node": "response_channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "isReady": {
+      "main": [
+        [
+          {
+            "node": "join_data_ready_case",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "delete_history_iteractions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "join_data_no_ready_case",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "response_channel": {
+      "main": [
+        [
+          {
+            "node": "TelegramResponseLoop",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "n8n_response_loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_chat_history": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "save_chat_history": {
+      "main": [
+        [
+          {
+            "node": "isReady",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "join_params": {
+      "main": [
+        [
+          {
+            "node": "Search api request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "brave api request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Search api request": {
+      "main": [
+        [
+          {
+            "node": "merge_queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "brave api request": {
+      "main": [
+        [
+          {
+            "node": "merge_queries",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "merge_queries": {
+      "main": [
+        [
+          {
+            "node": "extract_urls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "create_item_url_mdData",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "remap_to_channels1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "map_output_n8n_channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "remap_to_channels": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "map_output_n8n_channel": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram1": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extract_urls": {
+      "main": [
+        [
+          {
+            "node": "data_filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "extract_price_name",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "extract_price_name",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_item_url_mdData": {
+      "main": [
+        [
+          {
+            "node": "extract_price_name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extract_price_name": {
+      "main": [
+        [
+          {
+            "node": "remove_null_of_model_response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "compare_prices",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "compare_prices": {
+      "main": [
+        [
+          {
+            "node": "final_message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser3": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "compare_prices",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "map_output_n8n_channel1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "data_filter": {
+      "main": [
+        [
+          {
+            "node": "filter_by_allow_urls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter_by_allow_urls": {
+      "main": [
+        [
+          {
+            "node": "remap_to_channels",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch3": {
+      "main": [
+        [
+          {
+            "node": "Telegram5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "map_output_n8n_channel2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "remap_to_channels1": {
+      "main": [
+        [
+          {
+            "node": "Switch3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "map_output_n8n_channel2": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram5": {
+      "main": [
+        [
+          {
+            "node": "Telegram4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "remove_null_of_model_response": {
+      "main": [
+        [
+          {
+            "node": "compare_prices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "final_message": {
+      "main": [
+        [
+          {
+            "node": "final_channel_select",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "final_channel_select": {
+      "main": [
+        [
+          {
+            "node": "Telegram2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "map_output_n8n_channel1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4d4b6b0f080fecf15bb3a31318aa7fbd1c935f347a11f70ddc4a1246674c39c1"
+  }
+}
