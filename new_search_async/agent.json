@@ -1,0 +1,1340 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $json.message.chat.id }}"
+      },
+      "id": "c7d6eb1d-ffa1-4bce-ad44-a976ba0735b6",
+      "name": "SendTyping",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        -2540,
+        200
+      ],
+      "webhookId": "3ab1a89d-b23a-443e-bbba-39a6913de459",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "dSR9LYvEYxm8bYqQ",
+          "name": "Telegram Bara Médica asistente DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ecb3515-c1a2-4d69-adec-5b4d74e32056",
+              "name": "inputMessage",
+              "type": "string",
+              "value": "={{ $json.chatInput }}"
+            },
+            {
+              "id": "424b9697-94cb-4c38-953c-992436832684",
+              "name": "chatId",
+              "type": "string",
+              "value": "={{ $json.sessionId }}"
+            },
+            {
+              "id": "e23988e2-7c3d-4e38-9d5d-0c4b0c94d127",
+              "name": "channel",
+              "type": "string",
+              "value": "n8n"
+            },
+            {
+              "id": "001d9726-b719-4b13-9002-694cfa233f39",
+              "name": "userId",
+              "value": "={{ $json.sessionId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5318f472-c1ef-4625-8cec-efcde055229d",
+      "name": "n8nChatSettings",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -2380,
+        20
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ecb3515-c1a2-4d69-adec-5b4d74e32056",
+              "name": "inputMessage",
+              "type": "string",
+              "value": "={{ $('input').item.json.message.text }}"
+            },
+            {
+              "id": "424b9697-94cb-4c38-953c-992436832684",
+              "name": "chatId",
+              "type": "string",
+              "value": "={{ $('input').item.json.message.chat.id }}"
+            },
+            {
+              "id": "e23988e2-7c3d-4e38-9d5d-0c4b0c94d127",
+              "name": "channel",
+              "type": "string",
+              "value": "telegram"
+            },
+            {
+              "id": "1641b269-dffa-4732-95f2-b0dbbc740b1d",
+              "name": "userId",
+              "value": "={{ $('input').item.json.message.from.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f7d7efec-07a6-45ea-b716-cf26c70b67d4",
+      "name": "telegramChatSettings",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -2380,
+        200
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "id": "f8efc525-6cb9-4e63-99e3-ba5cc9655326",
+      "name": "n8nInput",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        -2700,
+        20
+      ],
+      "webhookId": "e981123d-79c9-4779-ae03-dc43f7d651ee",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "0bd8eec7-ad41-4bf2-b010-64485f2a4f9d",
+      "name": "input",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "position": [
+        -2700,
+        200
+      ],
+      "webhookId": "2b4d402a-d769-4bb7-af70-b22ad5b7da02",
+      "typeVersion": 1.1,
+      "credentials": {
+        "telegramApi": {
+          "id": "dSR9LYvEYxm8bYqQ",
+          "name": "Telegram Bara Médica asistente DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1700,
+        240
+      ],
+      "id": "55aa0377-8ca9-4132-add4-321137a0a3c3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('join_channels').item.json.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1320,
+        240
+      ],
+      "id": "002a3235-24b5-4111-971f-f0eb5f8b2f08",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres Barra Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('join_channels').item.json.sessionId }}",
+        "contextWindowLength": 200
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1920,
+        240
+      ],
+      "id": "ac9627ff-962f-409d-9bb8-356d607a4cf4",
+      "name": "Postgres Chat Memory1",
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres Barra Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"nextMessage\": {\n      \"type\": \"string\"\n    },\n    \"isReady\": {\n      \"type\": \"boolean\"\n    },\n    \"inputs\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"nombre_medicamento\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"ciudad\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"dosis\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"presentacion\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"categoria_del_medicamento\": {\n          \"type\": [\"string\", \"null\"]\n        }\n      }\n    }\n  },\n  \"required\": [\"nextMessage\", \"isReady\", \"inputs\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -1500,
+        240
+      ],
+      "id": "0ee1760c-711a-4404-a98a-33c6d8c15444",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.isReady }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "b1798758-99cb-4d60-8431-66c3cf2e5ded"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "no loop"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "319b83e8-1e96-412f-ba12-2125eb93bcc0",
+                    "leftValue": "={{ $json.isReady }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "false",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "loop"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -840,
+        80
+      ],
+      "id": "976e076e-52cc-414c-8fd7-7048429a6912",
+      "name": "isReady"
+    },
+    {
+      "parameters": {
+        "options": {
+          "groupMessages": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryManager",
+      "typeVersion": 1.1,
+      "position": [
+        -1980,
+        0
+      ],
+      "id": "1291c84f-e9b2-4ce6-a3c5-4a579c07d65f",
+      "name": "get_chat_history",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "ai",
+              "message": "={{ $json.output.nextMessage }}",
+              "hideFromUI": true
+            },
+            {
+              "type": "user",
+              "message": "={{ $('join_channels').item.json.chatInput }}",
+              "hideFromUI": true
+            },
+            {
+              "message": "={{ $json.output.inputs }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryManager",
+      "typeVersion": 1.1,
+      "position": [
+        -1200,
+        -100
+      ],
+      "id": "49fbfa9d-6311-4aba-822f-5858482ee2dd",
+      "name": "save_chat_history",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_chat_histories",
+          "mode": "list",
+          "cachedResultName": "n8n_chat_histories"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{ $json.chatId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -380,
+        -340
+      ],
+      "id": "4b71ce64-e9c8-4525-b609-cb7ae0dabf03",
+      "name": "delete_history_iteractions",
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres Barra Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Guardando query\n- Sea almacena en la db datos relacionados con la busqueda del cliente",
+        "height": 480,
+        "width": 380
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -460
+      ],
+      "id": "c5a96482-8822-4e3a-9b36-d7c6abc1dfdf",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('join_channels').item.json.chatInput }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=# Identidad:\nEres un asistente virtual especializado en ayudar a los usuarios a encontrar el mejor precio para su medicamento. Tu objetivo es recopilar todos los datos necesarios de forma clara y eficiente, utiliza el historial de conversacion para recordar la informacion que el usuario ya te proporcionó, evitar redundancias y mantener un flujo natural. Eres amables, paciente, cordial, saludas al usuario con mensajes amables, empatico y lo llevas por un proceso de preguntas fluido para obtener los datos requeridos obligatorio. Ademas puedes usar emoji para enriquecer las respuestas/preguntas.\n\n# Datos requeridos (todos obligatorios):\nDebes obtener los siguientes datos del usuario, sin excepciones:\n1. Nombre del medicamento\n2. Dosis\n3. Presentación\n4. Ciudad\n\n# Capacidades, habilidades:\n- Puede identificar si el medicamento que te piden realmente es un medicamento.\n- Verificar, sugerir, confirmar gramatica del medicamento requerido.\n- Puedes determinar la ciudad desde el input que el usurio entrega. ej: eriteritropoyetina 4000 ui solución inyectable guadalajara jalisco. result: guadalajara.\n- Puedes ayudar aun si la solicitud ni es un medicamento como tal, pero se consigue o vendes en farmaci de forma legal, con receta, preescrita, libre.\n\n# Reglas que debes seguir. (respetar):\n- No vendes ni ofreces asesoria con medicamentos o drogas prohibidas.\n\n# Historial del conversación:\n{{ $('get_chat_history').item.json.toJsonString() }}\n\n\n"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        -1600,
+        -60
+      ],
+      "id": "8b6665b2-2115-4350-9a24-d717491df43f",
+      "name": "iterations_loop",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ecb3515-c1a2-4d69-adec-5b4d74e32056",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $json.inputMessage }}"
+            },
+            {
+              "id": "424b9697-94cb-4c38-953c-992436832684",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $json.chatId }}"
+            },
+            {
+              "id": "e23988e2-7c3d-4e38-9d5d-0c4b0c94d127",
+              "name": "channel",
+              "type": "string",
+              "value": "={{ $json.channel }}"
+            },
+            {
+              "id": "92141864-371f-4a2b-803c-4bd23b58b5eb",
+              "name": "userId",
+              "value": "={{ $json.userId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7b785b04-798d-4c8a-a4b4-9277130aa629",
+      "name": "join_channels",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -2160,
+        120
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4d71ef01-2a28-410b-b1a3-4238a7e632c1",
+              "name": "query",
+              "value": "={{ $('iterations_loop').item.json.output.inputs.nombre_medicamento }} {{ $('iterations_loop').item.json.output.inputs.dosis }} {{ $('iterations_loop').item.json.output.inputs.presentacion }} {{ $('iterations_loop').item.json.output.inputs.ciudad }}",
+              "type": "string"
+            },
+            {
+              "id": "0ca2db20-db2e-4d67-b5bd-b3be0e8c2223",
+              "name": "inputs",
+              "value": "={{ $('iterations_loop').item.json.output.inputs }}",
+              "type": "object"
+            },
+            {
+              "id": "14c5f3bf-e7b1-45c9-bf5c-b49bd2268a70",
+              "name": "chatId",
+              "value": "={{ $('join_channels').item.json.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "5e917817-d54c-45df-ac8d-f346f7250c16",
+              "name": "channel",
+              "value": "={{ $('join_channels').item.json.channel }}",
+              "type": "string"
+            },
+            {
+              "id": "09ab7975-7589-436b-8989-4824eb733c0d",
+              "name": "userId",
+              "value": "={{ $('join_channels').item.json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "423b6ff4-4be7-4774-83f6-ca41af7d2edb",
+              "name": "isReady",
+              "value": "={{ $('iterations_loop').item.json.output.isReady }}",
+              "type": "string"
+            },
+            {
+              "id": "f7eab8ea-903b-4e53-b2c5-85c591446a1d",
+              "name": "loopMessage",
+              "value": "={{ $('iterations_loop').item.json.output.nextMessage }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1080,
+        200
+      ],
+      "id": "6686f530-81d0-400b-930d-4dc132fa3ee2",
+      "name": "iteraction_params"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "user_queries",
+          "mode": "list",
+          "cachedResultName": "user_queries"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query_full": "={{ $('iteraction_params').first().json.query.toLowerCase() }}",
+            "city": "={{ $('iteraction_params').first().json.inputs.ciudad.toLowerCase() }}",
+            "presentation": "={{ $('iteraction_params').first().json.inputs.presentacion.toLowerCase() }}",
+            "dosage": "={{ $('iteraction_params').first().json.inputs.dosis.toLowerCase() }}",
+            "medicine_name": "={{ $('iteraction_params').first().json.inputs.nombre_medicamento.toLowerCase() }}",
+            "user_id": "={{ $('iteraction_params').first().json.userId }}",
+            "medicine_category": "={{ $('iteraction_params').first().json.inputs.categoria_del_medicamento.toLowerCase() }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "query_full",
+              "displayName": "query_full",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "medicine_name",
+              "displayName": "medicine_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "dosage",
+              "displayName": "dosage",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "presentation",
+              "displayName": "presentation",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "medicine_category",
+              "displayName": "medicine_category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -380,
+        -140
+      ],
+      "id": "d1b76c90-3979-4427-8ccb-65965d4a0060",
+      "name": "save_user_query",
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres Barra Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "jufM3aKNoOSVCzup",
+          "mode": "list",
+          "cachedResultName": "User feedback"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "channel": "={{ $('iteraction_params').first().json.channel }}",
+            "feedbackMessage": "={{ $json.loopMessage }}",
+            "chatId": "={{ $('iteraction_params').first().json.chatId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "feedbackMessage",
+              "displayName": "feedbackMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -540,
+        320
+      ],
+      "id": "725f1bac-b58a-47a4-8b43-84e2eb486acc",
+      "name": "loop_message"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "async_search",
+          "mode": "list",
+          "cachedResultName": "async_search"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "city",
+              "value": "={{ $json.inputs.ciudad.toLowerCase() }}"
+            },
+            {
+              "column": "presentation",
+              "value": "={{ $json.inputs.presentacion.toLowerCase() }}"
+            },
+            {
+              "column": "medicine_name",
+              "value": "={{ $json.inputs.nombre_medicamento.toLowerCase() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -540,
+        100
+      ],
+      "id": "5e61181a-53e6-49d4-8d26-a3e1f798e1e7",
+      "name": "Postgres",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres Barra Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "EKX9p4KTCTRrpEvc",
+          "mode": "list",
+          "cachedResultName": "Execute search"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "isNeedUserFeedback": true,
+            "query_full": "={{ $('iteraction_params').item.json.query }}",
+            "medicine_name": "={{ $('iteraction_params').item.json.inputs.nombre_medicamento }}",
+            "dosage": "={{ $('iteraction_params').item.json.inputs.dosis }}",
+            "city": "={{ $('iteraction_params').item.json.inputs.ciudad }}",
+            "presentation": "={{ $('iteraction_params').item.json.inputs.presentacion }}",
+            "medicine_category": "={{ $('iteraction_params').item.json.inputs.categoria_del_medicamento }}",
+            "chatId": "={{ $('iteraction_params').item.json.chatId }}",
+            "channel": "={{ $('iteraction_params').item.json.channel }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "query_full",
+              "displayName": "query_full",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "medicine_name",
+              "displayName": "medicine_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "dosage",
+              "displayName": "dosage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "presentation",
+              "displayName": "presentation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "medicine_category",
+              "displayName": "medicine_category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "isNeedUserFeedback",
+              "displayName": "isNeedUserFeedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "boolean"
+            },
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        260
+      ],
+      "id": "b437b4d7-5ea4-458c-8776-fd2b65af2c24",
+      "name": "call_execute_search"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "jufM3aKNoOSVCzup",
+          "mode": "list",
+          "cachedResultName": "Send user feedback"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatId": "={{ $('iteraction_params').first().json.chatId }}",
+            "channel": "={{ $('iteraction_params').first().json.channel }}",
+            "feedbackMessage": "={{ $json.feedbackMessage }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "feedbackMessage",
+              "displayName": "feedbackMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        -40
+      ],
+      "id": "b4f526aa-deb2-48ca-bab3-7e8c9934b37c",
+      "name": "call_send_reused_message"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres un experto en medicamento capaz de compara las dosis recibidas en el input (json) compararla con esta:{{ $('iteraction_params').item.json.inputs.dosis }}, determinar si son la misma y en que indice del array en el json en dosage esta.\n\nejemplo: 1\n- 20mg = 20 mg = 2 0 m g = 20 m g"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        -120,
+        100
+      ],
+      "id": "a94624c7-147c-4acb-853e-595940215e85",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"isTheSameDosage\": true,\n    \"indice\": 0\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        340
+      ],
+      "id": "c917a0b6-1c38-472a-bfdc-9fbcfc58e44c",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        340
+      ],
+      "id": "fa011f3d-42ce-4d71-b1c3-695d0646e94f",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "dosage"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        100
+      ],
+      "id": "af32ce32-17ac-4163-87c1-739aa1ac75f7",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7f35b30f-6fb3-4a4b-b2d8-136ca95dc691",
+              "leftValue": "={{ $json.output.isTheSameDosage }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        100
+      ],
+      "id": "b2d5d2c0-f15c-4edd-9f9a-62e378775988",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "00ee5f87-b5ad-442f-bd82-8f155ba1dd65",
+              "name": "feedbackMessage",
+              "value": "={{ $('Postgres').all()[$('Basic LLM Chain').item.json.output.indice].json.result_prices}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        -40
+      ],
+      "id": "81eef88a-c8b8-4f0f-993d-bfa77181c5c5",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "SendTyping": {
+      "main": [
+        [
+          {
+            "node": "telegramChatSettings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8nChatSettings": {
+      "main": [
+        []
+      ]
+    },
+    "telegramChatSettings": {
+      "main": [
+        [
+          {
+            "node": "join_channels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8nInput": {
+      "main": [
+        [
+          {
+            "node": "n8nChatSettings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "input": {
+      "main": [
+        [
+          {
+            "node": "SendTyping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "iterations_loop",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "save_chat_history",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "get_chat_history",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "iterations_loop",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "isReady": {
+      "main": [
+        [
+          {
+            "node": "delete_history_iteractions",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "save_user_query",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "loop_message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_chat_history": {
+      "main": [
+        [
+          {
+            "node": "iterations_loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "save_chat_history": {
+      "main": [
+        [
+          {
+            "node": "iteraction_params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "iterations_loop": {
+      "main": [
+        [
+          {
+            "node": "save_chat_history",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "join_channels": {
+      "main": [
+        [
+          {
+            "node": "get_chat_history",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "iteraction_params": {
+      "main": [
+        [
+          {
+            "node": "isReady",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "call_execute_search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "call_send_reused_message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4d4b6b0f080fecf15bb3a31318aa7fbd1c935f347a11f70ddc4a1246674c39c1"
+  }
+}

@@ -1,0 +1,384 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "daysInterval": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -100,
+        -1560
+      ],
+      "id": "ab6079c6-4c5a-483f-82ed-2a9406ec06a8",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "getTimeBetweenDates",
+        "startDate": "={{ $json.created_at}}",
+        "endDate": "={{ $now }}",
+        "units": [
+          "week"
+        ],
+        "options": {
+          "includeInputFields": true
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        720,
+        -1540
+      ],
+      "id": "784b99b3-142b-4efd-b215-7f42bcb9e4e7",
+      "name": "Date & Time",
+      "executeOnce": false
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        -1660
+      ],
+      "id": "ea9ae80c-11ab-484c-96d5-1d8c13a5d887",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "content": "# Como?\n- Se traen todas las query_full unicas mas recientes\n- Se calcula que tan viejo es el resultados en semanas\n- Si: es viejo una semana se realizará una busqueda.\n- No: es viejo, no se relizará nada.\n\n## Explicacion query, (para mi yo del futuro) \nPor ejemplo, para obtener filas únicas por columna email con la fila más reciente:\n\nsql\nSELECT DISTINCT ON (email) *\nFROM usuarios\nORDER BY email, fecha_creacion DESC;",
+        "height": 400,
+        "width": 420,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        540,
+        -1980
+      ],
+      "id": "2fe9596e-f850-45ac-891c-4a2fa0f476dc",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "EKX9p4KTCTRrpEvc",
+          "mode": "list",
+          "cachedResultName": "Execute search"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query_full": "={{ $json.query_full }}",
+            "medicine_name": "={{ $json.medicine_name }}",
+            "dosage": "={{ $json.dosage }}",
+            "city": "={{ $json.city }}",
+            "presentation": "={{ $json.presentation }}",
+            "medicine_category": "={{ $json.medicine_category }}",
+            "isNeedUserFeedback": false,
+            "chatId": "empty",
+            "channel": "empty"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "query_full",
+              "displayName": "query_full",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "medicine_name",
+              "displayName": "medicine_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "dosage",
+              "displayName": "dosage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "presentation",
+              "displayName": "presentation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "medicine_category",
+              "displayName": "medicine_category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "isNeedUserFeedback",
+              "displayName": "isNeedUserFeedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "boolean",
+              "removed": false
+            },
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1260,
+        -1440
+      ],
+      "id": "b97caa9d-9e72-4903-b041-e21eca7735bf",
+      "name": "call_execute_search"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT DISTINCT ON (query_full) *\nFROM async_search\nORDER BY query_full, created_at DESC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        220,
+        -1700
+      ],
+      "id": "effde9bb-f2df-44c6-b6f3-4eb99354bbb0",
+      "name": "get_all_search_queries",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres Barra Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT DISTINCT ON (query_full) *\nFROM user_queries\nORDER BY query_full, created_at DESC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        220,
+        -1360
+      ],
+      "id": "a3577f05-b09d-4ebf-9c08-e42afa879dff",
+      "name": "get_all _unique_user_queries",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres Barra Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "query_full, city",
+        "joinMode": "enrichInput2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        480,
+        -1540
+      ],
+      "id": "bbc29756-5d6c-4597-a223-ff48172ee718",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0593e43d-3dc4-41b5-aab3-0b8958cf4e34",
+              "leftValue": "={{ $json.hasField('result_prices') }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "4013cea5-55c4-449d-a286-741d2948bd37",
+              "leftValue": "={{ $json.timeDifference.weeks }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        -1540
+      ],
+      "id": "41d4dd3f-3b02-42a1-a31a-71319c2eee64",
+      "name": "If"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "get_all_search_queries",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get_all _unique_user_queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_all_search_queries": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_all _unique_user_queries": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "call_execute_search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4d4b6b0f080fecf15bb3a31318aa7fbd1c935f347a11f70ddc4a1246674c39c1"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "10ea368a-68db-4d10-97fe-43768e57aaf4",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002671971068",
+        "text": "=```json\n{{ $json.data }}\n```\n",
+        "replyMarkup": "=none",
+        "forceReply": {},
+        "replyKeyboardOptions": {},
+        "replyKeyboardRemove": {},
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "ca036452-4cf5-467f-a532-0a9b10163372",
+      "name": "Telegram",
+      "webhookId": "bb0f6ed8-00f1-44ca-9f0d-258e56ef7d82",
+      "credentials": {
+        "telegramApi": {
+          "id": "dSR9LYvEYxm8bYqQ",
+          "name": "Telegram Bara Médica asistente DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const stringJson = JSON.stringify($input.first().json)\n\nfunction escapeMarkdownV2(text) {\n  return text.replace(/[_*\\[\\]()~`>#+\\-=|{}.!]/g, match => '\\\\' + match);\n}\n\nreturn { data: escapeMarkdownV2(stringJson) };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "f9e5abf7-1fd2-42be-a66f-3f10045255ee",
+      "name": "Code"
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4d4b6b0f080fecf15bb3a31318aa7fbd1c935f347a11f70ddc4a1246674c39c1"
+  }
+}

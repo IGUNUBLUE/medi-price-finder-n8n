@@ -1,0 +1,1152 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        0
+      ],
+      "id": "36d4190f-823f-4e56-9c1d-3c25428b927d",
+      "name": "Telegram Trigger",
+      "webhookId": "b60799c6-ee43-4be3-b1ac-b185d255b188",
+      "credentials": {
+        "telegramApi": {
+          "id": "WIVP4TKDgLFH7wR5",
+          "name": "K assistant "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "options": {
+          "systemMessage": "=## 🗓️ Asistente de Calendario Personal\n\nEres un amable asistente virtual especializado en la gestión de eventos personales, familiares y laborales. Tu objetivo es ayudar al usuario a organizar su agenda de manera fácil e intuitiva, manteniendo una conversación natural mientras gestionas sus eventos.\n\n### 📅 Fecha actual\nLa fecha actual es: {{ $now }} (formato ISO: YYYY-MM-DDT00:00:00Z)\nUsa esta referencia para interpretar expresiones temporales como \"mañana\", \"el próximo lunes\", \"en dos semanas\", etc.\n\n### 🧠 Comportamiento\n- **Amabilidad y empatía**: Usa un tono cálido y profesional. Sé conversacional pero eficiente.\n- **Iniciativa**: Sugiere información que podría ser útil basada en el contexto.\n- **Claridad**: Confirma siempre lo entendido y proporciona respuestas estructuradas y concisas.\n\n### 🛠️ Gestión de eventos\nDispones de estas herramientas para manipular eventos:\n\n| Herramienta | Función | Parámetros requeridos |\n|-------------|---------|------------------------|\n| `create`    | Crear evento | `nombre`, `descripcion`, `lugar`, `fecha`, `categoria` |\n| `getMany`   | Consultar eventos | Opcional: filtros por `fecha`, `categoria`, `nombre` |\n| `update`    | Actualizar evento | `nombre` (para identificar) + campos a modificar |\n| `delete`    | Eliminar evento | `nombre` |\n\n### 🔄 Flujo de interacción\n\n#### 1️⃣ Creación de eventos\n1. Recopila la información necesaria mediante una conversación natural\n2. Si falta algún dato obligatorio, pregúntalo de forma contextual y amable\n3. Cuando tengas todos los datos, muestra un resumen del evento:\n   ```\n   📝 Resumen del evento\n   - Nombre: [nombre]\n   - Descripción: [descripción]\n   - Lugar: [lugar]\n   - Fecha: [fecha formateada de manera legible]\n   - Categoría: [categoría]\n   ```\n4. Pide confirmación: \"¿Quieres que guarde este evento en tu calendario?\"\n5. Solo si la respuesta es afirmativa, utiliza la función `create`\n6. Confirma el resultado de la operación\n\n#### 2️⃣ Consulta de eventos\n1. Identifica los filtros solicitados por el usuario (fecha, categoría, nombre)\n2. Utiliza la función `getMany` con los parámetros correspondientes\n3. Presenta los resultados de forma clara y legible:\n   ```\n   📋 Eventos encontrados (3):\n   \n   📌 Reunión de trabajo\n   - Fecha: 20 de mayo, 15:00 \n   - Lugar: Sala de conferencias \n   - Categoría: Trabajo\n   \n   📌 Cena familiar\n   - Fecha: 21 de mayo, 20:30\n   - Lugar: Casa de mamá\n   - Categoría: Familia\n   ```\n4. Si hay muchos resultados, presenta un resumen y ofrece filtrar más\n\n#### 3️⃣ Actualización de eventos\n1. Identifica claramente qué evento desea modificar el usuario\n2. Si existe ambigüedad, usa `getMany` para mostrar opciones y pedir aclaración\n3. Confirma qué campos desea modificar y sus nuevos valores\n4. Muestra un resumen con los cambios propuestos:\n   ```\n   ✏️ Cambios propuestos para \"Reunión de trabajo\":\n   - Lugar: Sala de conferencias → Sala de juntas \n   - Hora: 15:00 → 16:30\n   ```\n5. Pide confirmación: \"¿Confirmas estos cambios para el evento?\"\n6. Solo si la respuesta es afirmativa, utiliza la función `update`\n7. Confirma el resultado de la operación\n\n#### 4️⃣ Eliminación de eventos\n1. Identifica claramente qué evento desea eliminar\n2. Si existe ambigüedad, usa `getMany` para mostrar opciones y pedir aclaración\n3. Pide confirmación explícita: \"¿Estás seguro de que quieres eliminar el evento 'Reunión de trabajo'?\"\n4. Solo si la respuesta es afirmativa, utiliza la función `delete`\n5. Confirma el resultado de la operación\n\n### ⚠️ Manejo de errores\n- Si una función devuelve error, comunícalo claramente al usuario de forma amable\n- Sugiere posibles soluciones o alternativas\n- Si hay ambigüedad en la solicitud del usuario, haz preguntas para aclarar antes de ejecutar cualquier función\n\n### 📝 Ejemplos de interacción natural\n\n**Ejemplo 1: Creación**\n```\nUsuario: Necesito agendar una reunión para mañana\nAsistente: Claro, vamos a agendar esa reunión para mañana. ¿Me podrías dar algunos detalles?\n- ¿Qué nombre le ponemos a la reunión?\nUsuario: Revisión del proyecto Alpha\nAsistente: Perfecto. ¿A qué hora será la reunión \"Revisión del proyecto Alpha\"?\nUsuario: A las 10 am\nAsistente: ¿En qué lugar se llevará a cabo?\nUsuario: En la sala de conferencias\nAsistente: ¿Quieres agregar alguna descripción o nota para esta reunión?\nUsuario: Presentación de avances trimestrales\nAsistente: Y por último, ¿en qué categoría la clasificamos? Por ejemplo: trabajo, personal, familia...\nUsuario: Trabajo\nAsistente: \n📝 Resumen del evento\n- Nombre: Revisión del proyecto Alpha\n- Descripción: Presentación de avances trimestrales\n- Lugar: Sala de conferencias\n- Fecha: 19 de mayo de 2025, 10:00 AM\n- Categoría: Trabajo\n\n¿Quieres que guarde este evento en tu calendario?\nUsuario: Sí, guárdalo\nAsistente: ¡Listo! He creado el evento \"Revisión del proyecto Alpha\" para mañana a las 10:00 AM.\n```\n\n**Ejemplo 2: Consulta**\n```\nUsuario: ¿Qué eventos tengo esta semana?\nAsistente: Déjame revisar tu calendario para esta semana...\n\n📋 Eventos encontrados (3):\n\n📌 Revisión del proyecto Alpha\n- Fecha: 19 de mayo, 10:00 AM\n- Lugar: Sala de conferencias\n- Categoría: Trabajo\n\n📌 Cita médica\n- Fecha: 21 de mayo, 9:30 AM\n- Lugar: Clínica San Rafael\n- Categoría: Personal\n\n📌 Cumpleaños de mamá\n- Fecha: 22 de mayo, Todo el día\n- Lugar: Casa familiar\n- Categoría: Familia\n\n¿Necesitas más detalles sobre alguno de estos eventos?\n```\n\n### 🚫 Restricciones importantes\n- **Nunca ejecutes una función** sin haber recopilado todos los parámetros requeridos\n- **Siempre pide confirmación** antes de crear, actualizar o eliminar eventos\n- **Nunca finjas ejecutar una función**. Solo utiliza las herramientas oficiales proporcionadas\n- No utilices lenguaje técnico o menciones la arquitectura subyacente en tus interacciones con el usuario\n- No incluyas la interfaz de la API ni menciones al modelo Gemini Flash 2.5 en las conversaciones"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        660,
+        0
+      ],
+      "id": "ceff065d-632e-41a0-9c65-f535ddbacf02",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "getAll",
+        "workspaceId": "wsmd9jmx",
+        "projectId": "pq49vh99rbia6v6",
+        "table": "mxa5oohuc3xd5fu",
+        "returnAll": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Return_All', ``, 'boolean') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.nocoDbTool",
+      "typeVersion": 3,
+      "position": [
+        880,
+        240
+      ],
+      "id": "b33d1be1-fbb0-405c-bee5-ba4587ebaebd",
+      "name": "Get all",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "2PN0Bgp1MLdzlHQW",
+          "name": "NocoDB account K assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "create",
+        "workspaceId": "wsmd9jmx",
+        "projectId": "pq49vh99rbia6v6",
+        "table": "mxa5oohuc3xd5fu",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "nombre",
+              "fieldValue": "={{ $fromAI('name', 'nombre del evento', 'string') }}"
+            },
+            {
+              "fieldName": "descripcion",
+              "fieldValue": "={{ $fromAI('descripcion', 'descripción del evento', 'string') }}"
+            },
+            {
+              "fieldName": "lugar",
+              "fieldValue": "={{ $fromAI('lugar', 'lugar donde se llevara en evento', 'string') }}"
+            },
+            {
+              "fieldName": "categoria",
+              "fieldValue": "={{ $fromAI('categoria', 'categoria del evento', 'string') }}"
+            },
+            {
+              "fieldName": "fecha",
+              "fieldValue": "={{ $fromAI('fecha', 'fecha del evento', 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.nocoDbTool",
+      "typeVersion": 3,
+      "position": [
+        980,
+        240
+      ],
+      "id": "bd5175a7-cb0e-4057-b806-342d655f5b96",
+      "name": "Create",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "2PN0Bgp1MLdzlHQW",
+          "name": "NocoDB account K assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "delete",
+        "workspaceId": "wsmd9jmx",
+        "projectId": "pq49vh99rbia6v6",
+        "table": "mxa5oohuc3xd5fu",
+        "id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Row_ID_Value', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-base.nocoDbTool",
+      "typeVersion": 3,
+      "position": [
+        1180,
+        240
+      ],
+      "id": "cf469a96-7633-4ba5-ad9f-eb9a27c37a3b",
+      "name": "Delete",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "2PN0Bgp1MLdzlHQW",
+          "name": "NocoDB account K assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        760,
+        240
+      ],
+      "id": "83155db9-ec42-4789-bafa-30809643a10b",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "Eb4zzIrTP8ttL8Yr",
+          "name": "Postgres supabase k-assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.from.id.toString() }}",
+                    "rightValue": "1212282583",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f13088dc-0858-4cc5-becf-28026a8cbfc7"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "L telegram ID"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "470dd9b5-39a8-4b30-bcc8-191b9785394c",
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.from.id.toString() }}",
+                    "rightValue": "1425422562",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "K telegram ID"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        420,
+        0
+      ],
+      "id": "183a1114-d183-4cbb-8578-be183e4ce0c3",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1440,
+        0
+      ],
+      "id": "5f4d89b6-a48e-4d11-ae53-208c4e5c483a",
+      "name": "Telegram",
+      "webhookId": "035ecd69-aedd-4497-9050-a6ee2b578809",
+      "credentials": {
+        "telegramApi": {
+          "id": "WIVP4TKDgLFH7wR5",
+          "name": "K assistant "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $json.message.chat.id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        260,
+        0
+      ],
+      "id": "fbf5f791-8dfc-44af-aa75-7c7a5431a174",
+      "name": "Typing",
+      "webhookId": "eeb425a3-53b4-4e06-ad84-4947e848d38e",
+      "credentials": {
+        "telegramApi": {
+          "id": "WIVP4TKDgLFH7wR5",
+          "name": "K assistant "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "update",
+        "workspaceId": "wsmd9jmx",
+        "projectId": "pq49vh99rbia6v6",
+        "table": "mxa5oohuc3xd5fu",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "nombre",
+              "fieldValue": "={{ $fromAI('name', 'nombre del evento', 'string') }}"
+            },
+            {
+              "fieldName": "descripcion",
+              "fieldValue": "={{ $fromAI('descripcion', 'descripción del evento', 'string') }}"
+            },
+            {
+              "fieldName": "lugar",
+              "fieldValue": "={{ $fromAI('lugar', 'lugar donde se llevara en evento', 'string') }}"
+            },
+            {
+              "fieldName": "categoria",
+              "fieldValue": "={{ $fromAI('categoria', 'categoria del evento', 'string') }}"
+            },
+            {
+              "fieldName": "fecha",
+              "fieldValue": "={{ $fromAI('fecha', 'fecha del evento', 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.nocoDbTool",
+      "typeVersion": 3,
+      "position": [
+        1080,
+        240
+      ],
+      "id": "abfcbbda-087c-4bcf-b86b-4a662a354654",
+      "name": "Update",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "2PN0Bgp1MLdzlHQW",
+          "name": "NocoDB account K assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres exelente removiendo cualquier formato markdown y dejando un texto plano con su respectivos saltos de lines. No cambias el texto, solo remueves el markdown. Tambien puedes agregar emojis para el mesaje mas divertido, simpre conservando el mensaje pricipal."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        1060,
+        0
+      ],
+      "id": "7f3a94cd-dd7d-4ba9-bf34-1790f2c93d78",
+      "name": "Plain text"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        240
+      ],
+      "id": "ceb5608d-230c-4a93-8436-c7d5143700f9",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        -380
+      ],
+      "id": "01be3258-789d-4275-aab3-e109ad669dc1",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "getAll",
+        "workspaceId": "wsmd9jmx",
+        "projectId": "pq49vh99rbia6v6",
+        "table": "mxa5oohuc3xd5fu",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        300,
+        -380
+      ],
+      "id": "153103a3-1637-480d-833c-fb553552fbb5",
+      "name": "NocoDB",
+      "alwaysOutputData": true,
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "2PN0Bgp1MLdzlHQW",
+          "name": "NocoDB account K assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres un asistente que procesa eventos desde datos JSON. Tu tarea es clasificar los eventos para hoy, mañana y pasado mañana (basándote en la fecha actual {{ $now }}) y mostrar ÚNICAMENTE la lista final de eventos en el formato especificado.\n\nReglas importantes:\nUSAR emoji para enriquecer la lista.\nNO muestres tu proceso de análisis\nNO incluyas explicaciones sobre cómo procesaste los datos\nNO incluyas la fecha actual en tu respuesta\nSOLO presenta la lista final de eventos agrupados por día\nSi un día no tiene eventos, omite ese día completamente\n\nFormato de salida (exactamente así):\nHoy\n\n[Nombre del evento]\n[Fecha y hora del evento]\n[Lugar del evento]\n[Siguiente evento...]\n\nMañana\n\n[Nombre del evento]\n[Fecha y hora del evento]\n[Lugar del evento]\n[Siguiente evento...]\n\nPasado mañana\n\n[Nombre del evento]\n[Fecha y hora del evento]\n[Lugar del evento]\n[Siguiente evento...]\n\nEjemplo del resultado esperado:\nHoy\n\nPedido Kaluba\n2025-05-18\nCentro Universo Capilar\n\nMañana\n\nCita médica\n19-05-2025 a las 8:20am\nConsalud sede 3 cra 49c #84-82"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        960,
+        -380
+      ],
+      "id": "2ab64522-d3b8-4434-a91d-a4ada04d0bf3",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17-thinking",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        -180
+      ],
+      "id": "061ee4d0-7943-41d3-97b7-091c39453b53",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "1425422562",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1320,
+        -380
+      ],
+      "id": "df628e65-841e-455c-a631-70f903a39510",
+      "name": "Telegram1",
+      "webhookId": "d7467a43-6b60-4c04-8de8-871731fb501d",
+      "credentials": {
+        "telegramApi": {
+          "id": "WIVP4TKDgLFH7wR5",
+          "name": "K assistant "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "3d395542-28d7-447d-bbfe-75c8481969fb",
+                    "leftValue": "={{ $json }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "events"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        520,
+        -380
+      ],
+      "id": "b8c9cdb6-86bd-4f33-963d-030d84c6e39b",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        580,
+        240
+      ],
+      "id": "b74e61b1-00d1-4687-a61c-18d6b633ed50",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "events",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        740,
+        -380
+      ],
+      "id": "70d2a5c8-bb56-457e-a212-248faadfd24b",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "getAll",
+        "workspaceId": "wsmd9jmx",
+        "projectId": "pq49vh99rbia6v6",
+        "table": "mxa5oohuc3xd5fu",
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        300,
+        -720
+      ],
+      "id": "c82fe29a-1670-4d12-9a38-522413701e2f",
+      "name": "NocoDB1",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "2PN0Bgp1MLdzlHQW",
+          "name": "NocoDB account K assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.fecha }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "date",
+              "type": "date",
+              "description": "add date with hours if this has.",
+              "required": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1,
+      "position": [
+        520,
+        -880
+      ],
+      "id": "35e76d41-6c59-493c-acec-7a52f42e7366",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        760,
+        -700
+      ],
+      "id": "e7e637f2-895f-4b9d-ba69-a7b55f091872",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        960,
+        -620
+      ],
+      "id": "1932480a-5e31-4787-95bc-f752c14964e2",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bfa671e0-344e-4cde-a4c9-10218bb22dc3",
+              "name": "date",
+              "value": "={{ $json.output.date }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        -880
+      ],
+      "id": "6d71e4a7-056c-4822-abc7-5b0b06443e10",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fe4e8d01-13a0-44ef-8dc4-0c9e69e63be1",
+              "leftValue": "={{ $json.date.toDateTime().format('yyyy-MM-dd') }}",
+              "rightValue": "={{ $today.format('yyyy-MM-dd') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1180,
+        -620
+      ],
+      "id": "b6346296-50ae-4c3c-95b0-ac2e6c26f5e7",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "delete",
+        "workspaceId": "wsmd9jmx",
+        "projectId": "pq49vh99rbia6v6",
+        "table": "mxa5oohuc3xd5fu",
+        "id": "={{ $json.Id }}"
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        1400,
+        -620
+      ],
+      "id": "0442f0b6-a3f8-4150-9069-9d1c30a15615",
+      "name": "NocoDB2",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "2PN0Bgp1MLdzlHQW",
+          "name": "NocoDB account K assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "Id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1560,
+        -800
+      ],
+      "id": "7ce8b55a-1d58-45ed-aa58-5af96c93ee11",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst names = []\nfor (const item of $input.all()) {\n  names.push(item.json.nombre)\n}\n\nreturn { names: names.join(', ') };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        -800
+      ],
+      "id": "df152c79-7b5c-4c3b-99a7-0c203ff4284b",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "chatId": "1425422562",
+        "text": "=Hola ✌🏻, los eventos: *{{ $json.names }}* fueron eliminados automaticamente porque las fechas ya pasaron\\. 👌🏻",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        -800
+      ],
+      "id": "7b19dd87-c47f-4f48-8228-62d4047bac5c",
+      "name": "Telegram2",
+      "webhookId": "01dec468-42cc-4364-8565-9f15b2d70b3f",
+      "credentials": {
+        "telegramApi": {
+          "id": "WIVP4TKDgLFH7wR5",
+          "name": "K assistant "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        -720
+      ],
+      "id": "a1adee3f-be3b-4f8f-ad36-d0be50881b0e",
+      "name": "Schedule DETELE OLD"
+    },
+    {
+      "parameters": {
+        "content": "## Borrar\nBorrar los eventos ya pasados"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -900
+      ],
+      "id": "e2486598-32cf-45c3-a37f-0ebce8ea62cd",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Notificar \nNotificar eventos pendientes"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -560
+      ],
+      "id": "a6d99b14-ddf0-4c46-b965-7b60c5847178",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Agente\nCRUD eventos."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -180
+      ],
+      "id": "eb8bd6c9-418b-42f3-9fab-e9f90873e1cb",
+      "name": "Sticky Note2"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Typing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Plain text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get all": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Typing": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plain text": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Plain text",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "NocoDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NocoDB": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NocoDB1": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "NocoDB2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NocoDB2": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Telegram2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule DETELE OLD": {
+      "main": [
+        [
+          {
+            "node": "NocoDB1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4d4b6b0f080fecf15bb3a31318aa7fbd1c935f347a11f70ddc4a1246674c39c1"
+  }
+}

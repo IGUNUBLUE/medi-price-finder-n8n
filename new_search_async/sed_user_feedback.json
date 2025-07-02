@@ -1,0 +1,255 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "telegram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c0e21f41-e589-42b6-bd15-25f817f0beac"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "telegram"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "59989dcd-d078-4526-a4af-248606674692",
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "n8n",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "n8n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        300,
+        100
+      ],
+      "id": "d680d90b-9ab4-4e6c-96c8-159af24c5a70",
+      "name": "switch_channel"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b32f21ec-822e-4db7-b91a-4020632c7858",
+              "name": "chatId",
+              "value": "={{ $json.chatId }}",
+              "type": "string"
+            },
+            {
+              "id": "782456ab-93ec-4a97-b2ef-599f944ef0aa",
+              "name": "channel",
+              "value": "={{ $json.channel }}",
+              "type": "string"
+            },
+            {
+              "id": "934dc2a8-c069-47f5-8481-6fad269f1075",
+              "name": "feedbackMessage",
+              "value": "={{ $json.feedbackMessage }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        60,
+        100
+      ],
+      "id": "4492a053-226f-4842-871c-8259bbc1487a",
+      "name": "params"
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $('params').first().json.chatId }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        540,
+        -40
+      ],
+      "id": "a1f60d73-cfc8-40ee-98fa-26cecb371f79",
+      "name": "typing_action",
+      "webhookId": "0489bb60-d7f5-442e-9b06-f4e2c46fa0de",
+      "credentials": {
+        "telegramApi": {
+          "id": "dSR9LYvEYxm8bYqQ",
+          "name": "Telegram Bara Médica asistente DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('params').first().json.chatId }}",
+        "text": "={{ $('params').first().json.feedbackMessage }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        740,
+        -40
+      ],
+      "id": "38dd68bd-3d78-4e30-a91d-4205d6cb5118",
+      "name": "send_message",
+      "webhookId": "c1b66163-87ff-47bd-af41-831fe187935d",
+      "credentials": {
+        "telegramApi": {
+          "id": "dSR9LYvEYxm8bYqQ",
+          "name": "Telegram Bara Médica asistente DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d607140d-f2ba-43a0-a33d-af2d8b95f92a",
+              "name": "output",
+              "value": "={{ $('params').first().json.feedbackMessage }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        740,
+        240
+      ],
+      "id": "6b731ee6-fe5c-4a49-9dd0-7060de9e3b0d",
+      "name": "send_chat_message"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "chatId"
+            },
+            {
+              "name": "channel"
+            },
+            {
+              "name": "feedbackMessage"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        100
+      ],
+      "id": "823f65d6-ed12-4b05-8099-7d55520a5be7",
+      "name": "call_trigger"
+    }
+  ],
+  "connections": {
+    "switch_channel": {
+      "main": [
+        [
+          {
+            "node": "typing_action",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send_chat_message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "params": {
+      "main": [
+        [
+          {
+            "node": "switch_channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "typing_action": {
+      "main": [
+        [
+          {
+            "node": "send_message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call_trigger": {
+      "main": [
+        [
+          {
+            "node": "params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "4d4b6b0f080fecf15bb3a31318aa7fbd1c935f347a11f70ddc4a1246674c39c1"
+  }
+}

@@ -1,0 +1,1338 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $json.message.chat.id }}"
+      },
+      "id": "02e6cbe7-c77c-472d-8992-2cb28f2f0b66",
+      "name": "SendTyping",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        -2220,
+        120
+      ],
+      "webhookId": "52b1effd-4d91-4377-b0ad-07c795eec16b",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "dSR9LYvEYxm8bYqQ",
+          "name": "Telegram Bara Médica asistente DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ecb3515-c1a2-4d69-adec-5b4d74e32056",
+              "name": "inputMessage",
+              "type": "string",
+              "value": "={{ $json.chatInput }}"
+            },
+            {
+              "id": "424b9697-94cb-4c38-953c-992436832684",
+              "name": "chatId",
+              "type": "string",
+              "value": "={{ $json.sessionId }}"
+            },
+            {
+              "id": "e23988e2-7c3d-4e38-9d5d-0c4b0c94d127",
+              "name": "mode",
+              "type": "string",
+              "value": "n8n"
+            },
+            {
+              "id": "001d9726-b719-4b13-9002-694cfa233f39",
+              "name": "userId",
+              "value": "={{ $json.sessionId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f4a79f83-83c0-498f-b07c-0da66251ab43",
+      "name": "n8nChatSettings",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -2060,
+        -60
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ecb3515-c1a2-4d69-adec-5b4d74e32056",
+              "name": "inputMessage",
+              "type": "string",
+              "value": "={{ $('input').item.json.message.text }}"
+            },
+            {
+              "id": "424b9697-94cb-4c38-953c-992436832684",
+              "name": "chatId",
+              "type": "string",
+              "value": "={{ $('input').item.json.message.chat.id }}"
+            },
+            {
+              "id": "e23988e2-7c3d-4e38-9d5d-0c4b0c94d127",
+              "name": "mode",
+              "type": "string",
+              "value": "telegram"
+            },
+            {
+              "id": "1641b269-dffa-4732-95f2-b0dbbc740b1d",
+              "name": "userId",
+              "value": "={{ $('input').item.json.message.from.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f68a2bca-e6c3-45ca-b664-5f5dd0b09a6d",
+      "name": "telegramChatSettings",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -2060,
+        120
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "id": "f8ee06f7-68df-485d-89a8-0f6f09a67f32",
+      "name": "n8nInput",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        -2380,
+        -60
+      ],
+      "webhookId": "10c4cf7a-a297-4ced-933f-00c6784cd36b",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "898bbd32-3dd6-4f58-ae39-9ebd2e14edbf",
+      "name": "input",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "position": [
+        -2380,
+        120
+      ],
+      "webhookId": "d364b036-0fd4-4e1b-a03b-486ac97c53d3",
+      "typeVersion": 1.1,
+      "credentials": {
+        "telegramApi": {
+          "id": "dSR9LYvEYxm8bYqQ",
+          "name": "Telegram Bara Médica asistente DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1420,
+        40
+      ],
+      "id": "6739ffb1-0c47-42d4-a61d-852b7f341ec6",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('join_settings').item.json.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1060,
+        40
+      ],
+      "id": "5d94803e-ab68-4490-b8b8-36e0ac440811",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres Barra Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('join_settings').item.json.sessionId }}",
+        "contextWindowLength": 200
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1580,
+        40
+      ],
+      "id": "a2f2f3cc-75e6-42c2-8114-b49af20b7ab7",
+      "name": "Postgres Chat Memory1",
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres Barra Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"nextMessage\": {\n      \"type\": \"string\"\n    },\n    \"isReady\": {\n      \"type\": \"boolean\"\n    },\n    \"inputs\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"nombre_medicamento\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"ciudad\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"dosis\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"presentacion\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"categoria_del_medicamento\": {\n          \"type\": [\"string\", \"null\"]\n        }\n      }\n    }\n  },\n  \"required\": [\"nextMessage\", \"isReady\", \"inputs\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -1240,
+        40
+      ],
+      "id": "e74e8c9c-8f5d-495d-b1c8-ba614a0fcd23",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4d71ef01-2a28-410b-b1a3-4238a7e632c1",
+              "name": "query",
+              "value": "={{ $('iterations_loop').item.json.output.inputs.nombre_medicamento }} {{ $('iterations_loop').item.json.output.inputs.dosis }} {{ $('iterations_loop').item.json.output.inputs.presentacion }} {{ $('iterations_loop').item.json.output.inputs.ciudad }}",
+              "type": "string"
+            },
+            {
+              "id": "0ca2db20-db2e-4d67-b5bd-b3be0e8c2223",
+              "name": "inputs",
+              "value": "={{ $('iterations_loop').item.json.output.inputs }}",
+              "type": "object"
+            },
+            {
+              "id": "14c5f3bf-e7b1-45c9-bf5c-b49bd2268a70",
+              "name": "chatId",
+              "value": "={{ $('join_settings').item.json.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "d91f68ed-2fc5-46dc-a106-730ddd435a48",
+              "name": "sessionId",
+              "value": "={{ $('join_settings').item.json.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "5e917817-d54c-45df-ac8d-f346f7250c16",
+              "name": "mode",
+              "value": "={{ $('join_settings').item.json.mode }}",
+              "type": "string"
+            },
+            {
+              "id": "09ab7975-7589-436b-8989-4824eb733c0d",
+              "name": "userId",
+              "value": "={{ $('join_settings').item.json.userId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -500,
+        120
+      ],
+      "id": "5236df0a-ada2-4d77-8f66-7c8bfd12d319",
+      "name": "join_data_ready_case"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dd5afeae-c964-4b10-b373-707050309d22",
+              "name": "output",
+              "value": "={{ $('iterations_loop').item.json.output.nextMessage }}",
+              "type": "string"
+            },
+            {
+              "id": "a5f711eb-c1cc-4afd-9689-16555b392306",
+              "name": "mode",
+              "value": "={{ $('join_settings').item.json.mode }}",
+              "type": "string"
+            },
+            {
+              "id": "ae3041f3-8995-4a9d-b848-8aa4f86adef5",
+              "name": "chatId",
+              "value": "={{ $('join_settings').item.json.sessionId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2340,
+        480
+      ],
+      "id": "5e323cd1-3be2-4e21-964c-fa4f90a2c1ad",
+      "name": "join_data_no_ready_case"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('iterations_loop').item.json.output.isReady }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "b1798758-99cb-4d60-8431-66c3cf2e5ded"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "no loop"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "319b83e8-1e96-412f-ba12-2125eb93bcc0",
+                    "leftValue": "={{ $('iterations_loop').item.json.output.isReady }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "false",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "loop"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -800,
+        140
+      ],
+      "id": "8e2653e0-2c60-43ab-9548-15587b4c4272",
+      "name": "isReady"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.mode }}",
+                    "rightValue": "telegram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "da4ea7c1-a125-48bc-80c9-8fd60621c3e4"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "telegram response"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "25cba0e9-e79b-4e25-b469-4ced0320198f",
+                    "leftValue": "={{ $json.mode }}",
+                    "rightValue": "n8n",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "n8n response"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -2120,
+        480
+      ],
+      "id": "134df427-2195-4d64-8b87-88817bab1f9a",
+      "name": "response_channel"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1820,
+        380
+      ],
+      "id": "df1abe40-ecc8-416a-ad39-d82d4a7571d7",
+      "name": "TelegramResponseLoop",
+      "webhookId": "488979d9-f00a-4ff2-8743-c74540a597fb",
+      "credentials": {
+        "telegramApi": {
+          "id": "dSR9LYvEYxm8bYqQ",
+          "name": "Telegram Bara Médica asistente DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "groupMessages": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryManager",
+      "typeVersion": 1.1,
+      "position": [
+        -1620,
+        -380
+      ],
+      "id": "af8484ec-ae04-4788-b181-65e3e742746a",
+      "name": "get_chat_history",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "ai",
+              "message": "={{ $json.output.nextMessage }}",
+              "hideFromUI": true
+            },
+            {
+              "type": "user",
+              "message": "={{ $('join_settings').item.json.chatInput }}",
+              "hideFromUI": true
+            },
+            {
+              "message": "={{ $json.output.inputs }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryManager",
+      "typeVersion": 1.1,
+      "position": [
+        -900,
+        -380
+      ],
+      "id": "bbf2b165-4496-4c2e-a0d2-da0c6af91fb0",
+      "name": "save_chat_history",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_chat_histories",
+          "mode": "list",
+          "cachedResultName": "n8n_chat_histories"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{ $('join_settings').item.json.sessionId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -780,
+        440
+      ],
+      "id": "ea4aa85e-7a6c-48c5-8582-2bbdd8ea672a",
+      "name": "delete_history_iteractions",
+      "credentials": {
+        "postgres": {
+          "id": "WNzr8uTpMIQCcVkI",
+          "name": "Postgres Barra Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1820,
+        580
+      ],
+      "id": "87943d2e-1094-4b50-a786-d44ad68682ae",
+      "name": "n8n_response_loop"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('join_settings').item.json.chatInput }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=# Identidad:\nEres un asistente virtual especializado en ayudar a los usuarios a encontrar el mejor precio para su medicamento. Tu objetivo es recopilar todos los datos necesarios de forma clara y eficiente, utiliza el historial de conversacion para recordar la informacion que el usuario ya te proporcionó, evitar redundancias y mantener un flujo natural. Eres amables, paciente, cordial, saludas al usuario con mensajes amables, empatico y lo llevas por un proceso de preguntas fluido para obtener los datos requeridos obligatorio. Ademas puedes usar emoji para enriquecer las respuestas/preguntas.\n\n# Datos requeridos (todos obligatorios):\nDebes obtener los siguientes datos del usuario, sin excepciones:\n1. Nombre del medicamento\n2. Dosis\n3. Presentación\n4. Ciudad\n\n# Capacidades, habilidades:\n- Puede identificar si el medicamento que te piden realmente es un medicamento.\n- Verificar, sugerir, confirmar gramatica del medicamento requerido.\n- Puedes determinar la ciudad desde el input que el usurio entrega. ej: eriteritropoyetina 4000 ui solución inyectable guadalajara jalisco. result: guadalajara.\n- Puedes ayudar aun si la solicitud ni es un medicamento como tal, pero se consigue o vendes en farmaci de forma legal, con receta, preescrita, libre.\n\n# Reglas que debes seguir. (respetar):\n- No vendes ni ofreces asesoria con medicamentos o drogas prohibidas.\n\n# Historial del conversación:\n{{ $('get_chat_history').item.json.toJsonString() }}\n\n\n"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        -1260,
+        -380
+      ],
+      "id": "850d7007-db24-4f08-be1c-f2bca7617928",
+      "name": "iterations_loop",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.inputs }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=# Identidad\nEres un asistente especializado en búsqueda de medicamentos. Tu objetivo es encontrar los **mejores 3 precios** del medicamento solicitado, utilizando únicamente URLs permitidas y procesando contenido en formato Markdown. Debes seguir un flujo estructurado y validar que todos los datos requeridos estén presentes. Si falta información, solicita clarificación antes de continuar. Ademas informa cada paso que realizas al usuario. \n\n# Datos Obligatorios Requeridos\n1. Nombre del medicamento (ejemplo: \"Paracetamol\")\n2. Dosis (ejemplo: \"500 mg\")\n3. Presentación (ejemplo: \"Tabletas\")\n4. Ciudad (ejemplo: \"Bogotá\")\n\nSi el usuario no proporciona alguno de estos datos, responde (use tool: update_state_of_process)\n> \"Para realizar una búsqueda precisa, necesito los siguientes detalles: nombre del medicamento, dosis, presentación y ciudad.\"\n  \nEjemplo: para enviar mensajes en telegram se necesita el <chatId>\n\n# Flujo de Ejecución (Chain of Thought + ReAct Prompting)\n1. **Identificar datos obligatorios\n  - Extrae `nombre`, `dosis`, `presentación` y `ciudad` de la consulta del usuario.\n  - Ejemplo:  \n     *Usuario*: \"Busco Amoxicilina 500 mg en cápsulas en Medellín.\"  \n     *Datos extraídos*:  \n     ```json\n     {\n       \"nombre\": \"Amoxicilina\",\n       \"dosis\": \"500 mg\",\n       \"presentación\": \"cápsulas\",\n       \"ciudad\": \"Medellín\"\n     }\n     ```\n  -  Agradece al usuario por proporcionar los datos requeridos cuando los tienes todos. El mensaje lleva emoji y no se repite si ya lo enviaste. (update_state_of_process)\n\n2. Buscar usando `google_search` y `brave_search`\n  - Realiza una búsqueda con los parámetros: `[nombre] [dosis] [presentación] [ciudad]`.\n  - Ejemplo:\n    ```python\n    google_search(\"Amoxicilina 500 mg cápsulas Medellín\")\n    ```\n  - Salida esperada: Un objeto con un array `organic_results` conteniendo objetos con la clave `link`.\n  Ejemplo para google_search:\n    ```json\n      {\n       \"organic_results\": [\n         {\"link\": \"https://farmaciaA.com/amoxicilina\"},\n         {\"link\": \"https://farmaciaB.co/medicamentos\"},\n         {\"link\": \"https://sitioNoPermitido.com\"}\n       ]\n     }\n    ```\n  - Ejemplo:\n    ```python\n    brave_search(\"Amoxicilina 500 mg cápsulas Medellín\")\n    ```\n  - Salida esperada: Un objeto con un array `web.results` conteniendo objetos con la clave `url`.\n  Ejemplo para google_search:\n    ```json\n      {\n       \"organic_results\": [\n         {\"url\": \"https://farmaciaA.com/amoxicilina\"},\n         {\"url\": \"https://farmaciaB.co/medicamentos\"},\n         {\"url\": \"https://sitioNoPermitido.com\"}\n       ]\n     }\n    ```\n  - combina los resultados de las dos tools, filtra urls repetidas y combina link resultante en un array.\n  -  Noficar al usuario la busqueda en internet. El mensaje lleva emoji y no se repite si ya lo enviaste. (update_state_of_process)\n\n3. Extraer dominios base de los resultados de Google y brave\n  - Procesa cada `link` en `organic_results` y extrae el dominio base (sin subdirectorios o protocolos).\n  - Ejemplo;\n    ```json\n      {\n        \"dominios_base\": [\"farmaciaA.com\", \"farmaciaB.co\", \"sitioNoPermitido.com\"]\n      }\n    ```\n  - Noficar al usuario se estan procesando los resultados. El mensaje lleva emoji y no se repite si ya lo enviaste.  (update_state_of_process)\n\n4. Filtrar dominios permitidos con `get_all_allow_urls_by_city`\n  - Consulta los dominios base autorizados para la ciudad especificada.\n  - Ejemplo:\n    ```python\n      get_all_allow_urls_by_city(ciudad=\"Medellín\")\n    ```\n  - Salida esperada:\n    ```json\n      {\n        \"dominios_permitidos\": [\"farmaciaA.com\", \"farmaciaC.com\"]\n      }\n    ```\n  - Noficar al usuario que se solicitando los dominios confiables. El mensaje lleva emoji y no se repite si ya lo enviaste.    (update_state_of_process)\n\n5. Comparar y filtrar URLs por dominio base\n    - Compara los dominios base extraídos de Google con los permitidos y filtra las coincidencias.\n  - Ejemplo:\n    ```json\n      {\n        \"urls_filtradas\": [\n          \"https://farmaciaA.com/amoxicilina\"\n        ]\n      }\n    ```\n  - Noficar al usuario que si filtran los resultados basados en los dominios confiables. El mensaje lleva emoji y no se repite si ya lo enviaste. .  (update_state_of_process)\n\n6. Obtener contenido Markdown con `get_markdown_data`\n  - Procesa las URLs filtradas para extraer el cuerpo en formato Markdown.\n  - Ejemplo:\n    ```python\n      get_markdown_data([\n        \"https://farmaciaA.com/amoxicilina\",\n        \"https://farmaciaB.com/amoxicilina\"\n      ])\n    ```\n  - Salida esperada:\n      ```markdown\n        ## Amoxicilina 500 mg - Cápsulas\n          Precio: $8.500 COP\n          Disponibilidad: En stock\n          Envío: Gratis a toda Colombia\n      ```\n  - Noficar al usuario que se esta procesando la informacion de cada coincidencia. El mensaje lleva emoji y no se repite si ya lo enviaste.   (update_state_of_process)\n\n7. Procesar Markdown y devolver resultado estructurado\n  - Analiza el contenido Markdown para extraer precios, disponibilidad y otros detalles relevantes.\n  - Compara los precios y selecciona los **3 mejores** (ordenados de menor a mayor).\n  - Ejemplo de respuesta final:\n      ```json\n        {\n          \"precio1\": {\n          \"nombre\": \"Amoxicilina\",\n          \"precio\": \"8500\",\n          \"url\": \"https://farmaciaA.com/amoxicilina\",\n          \"domain\": \"farmaciaA.com\",\n          \"detalles\": \"Disponibilidad: En stock. Envío: Gratis a toda Colombia.\"\n        },\n        \"precio2\": {\n          \"nombre\": \"Amoxicilina\",\n          \"precio\": \"9200\",\n          \"url\": \"https://farmaciaC.com/amoxicilina\",\n          \"domain\": \"farmaciaC.com\",\n          \"detalles\": \"Disponibilidad: En stock. Envío: $5.000 COP.\"\n        },\n        \"precio3\": {\n          \"nombre\": \"Amoxicilina\",\n          \"precio\": null,\n          \"url\": \"\",\n          \"domain\": \"\",\n          \"detalles\": \"No se encontraron más resultados.\"\n        }\n      }\n    ```\n  -  Noficar al usuario que se esta procesando la informacion de cada coincidencia. El mensaje lleva emoji y no se repite si ya lo enviaste. (update_state_of_process)\n\n# Restricciones y Validaciones\n  1. Solo usar dominios base permitidos:\n    - Si no hay coincidencias tras filtrar con `get_all_allow_urls_by_city`, responde:  \n     > \"No se encontraron resultados para [medicamento] en fuentes autorizadas en [ciudad].\"\n\n  2. Formato de salida obligatorio**:\n    - Siempre devolver un JSON con los campos: `precio1`, `precio2`, `precio3`.\n    - `precio1` es obligatorio; `precio2` y `precio3` pueden omitirse si no hay resultados.\n\n  3. Manejo de errores:\n    - Si `get_markdown_data` falla, notifica al usuario y omite esa URL.\n    - Si no se encuentra un precio, establece `\"precio\": null`.\n\n# Ejemplo de Entrada/Salida (Few-Shot Prompting)\n  - Entrada del usuario:  \n    \"¿Dónde comprar Insulina 10 ml en Cali al mejor precio?\"\n\n  - Salida esperada:\n      ```json\n        {\n          \"precio1\": {\n          \"nombre\": \"Amoxicilina\",\n          \"precio\": \"8500\",\n          \"url\": \"https://farmaciaA.com/amoxicilina\",\n          \"domain\": \"farmaciaA.com\",\n          \"detalles\": \"Disponibilidad: En stock. Envío: Gratis a toda Colombia.\"\n        },\n        \"precio2\": {\n          \"nombre\": \"Amoxicilina\",\n          \"precio\": \"9200\",\n          \"url\": \"https://farmaciaC.com/amoxicilina\",\n          \"domain\": \"farmaciaC.com\",\n          \"detalles\": \"Disponibilidad: En stock. Envío: $5.000 COP.\"\n        },\n        \"precio3\": {\n          \"nombre\": \"Amoxicilina\",\n          \"precio\": null,\n          \"url\": \"\",\n          \"domain\": \"\",\n          \"detalles\": \"No se encontraron más resultados.\"\n        }\n      }\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -260,
+        120
+      ],
+      "id": "932f4ec6-8bf2-418a-a0f7-8efca3c5278b",
+      "name": "AI Agent",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Get result of google search to the provide query(q).",
+        "url": "https://www.searchapi.io/api/v1/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "parametersQuery": {
+          "values": [
+            {
+              "name": "q"
+            },
+            {
+              "name": "num",
+              "valueProvider": "fieldValue",
+              "value": "100"
+            },
+            {
+              "name": "engine",
+              "valueProvider": "fieldValue",
+              "value": "google"
+            },
+            {
+              "name": "location"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        20,
+        460
+      ],
+      "id": "d75e2c71-9d40-49f4-9145-bba6302bd66c",
+      "name": "google_search_results",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "z3mfaR0eTztFYlRz",
+          "name": "Search api key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Get the markdown data of the provide link pages. The input is an array of urls.\nExample of the body:\n{\nurls: ['https://farmaciaA.com', 'https://farmaciaA.com']\n}",
+        "method": "POST",
+        "url": "https://opryduogwuicddhqmgba.supabase.co/functions/v1/bara_price_multi_fetchs",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "model"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        -360,
+        460
+      ],
+      "id": "21e42eca-c458-409b-af69-f9395464add7",
+      "name": "get_markdow_data",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YGLOgacByF7Iy8bS",
+          "name": "Supabase Edge Function Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "pharmacy_for_city",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "city",
+              "condition": "like",
+              "keyValue": "={{ $fromAI('Field_Value', `name of the city in lower case`, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        380,
+        460
+      ],
+      "id": "7e6dd81a-9e98-4cc2-b9cf-eca33a12df3c",
+      "name": "get_all_allow_urls_by_city",
+      "credentials": {
+        "supabaseApi": {
+          "id": "hmzt7OOgWwOH4ZDl",
+          "name": "Supabase Bara Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Send a message about the process state or next step.",
+        "chatId": "={{ $('join_data_ready_case').first().json.chatId }}",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text', ``, 'string') }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegramTool",
+      "typeVersion": 1.2,
+      "position": [
+        -180,
+        460
+      ],
+      "id": "4768ba1e-82e3-45f8-8846-399a59277cf1",
+      "name": "update_state_of_process",
+      "webhookId": "fea35722-2c85-4b80-88b5-3e543707023a",
+      "credentials": {
+        "telegramApi": {
+          "id": "dSR9LYvEYxm8bYqQ",
+          "name": "Telegram Bara Médica asistente DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        340
+      ],
+      "id": "ae2729bd-229e-4fe6-a7d0-c58eb51d7192",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('join_data_ready_case').first().json.chatId }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        660,
+        0
+      ],
+      "id": "701e2a57-075d-4c37-bc5d-8626aa8aeb2e",
+      "name": "Telegram2",
+      "webhookId": "b019615a-d797-434e-8725-4214ecdaa542",
+      "credentials": {
+        "telegramApi": {
+          "id": "dSR9LYvEYxm8bYqQ",
+          "name": "Telegram Bara Médica asistente DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('join_data_ready_case').first().json.mode }}",
+                    "rightValue": "telegram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c0e21f41-e589-42b6-bd15-25f817f0beac"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "telegram"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "59989dcd-d078-4526-a4af-248606674692",
+                    "leftValue": "={{ $('join_data_ready_case').first().json.mode }}",
+                    "rightValue": "n8n",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "n8n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        360,
+        140
+      ],
+      "id": "2e4e474b-74d9-49ea-9a0d-932f9d02b7dd",
+      "name": "final_channel_select"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ecb3515-c1a2-4d69-adec-5b4d74e32056",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $json.inputMessage }}"
+            },
+            {
+              "id": "424b9697-94cb-4c38-953c-992436832684",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $json.chatId }}"
+            },
+            {
+              "id": "e23988e2-7c3d-4e38-9d5d-0c4b0c94d127",
+              "name": "mode",
+              "type": "string",
+              "value": "={{ $json.mode }}"
+            },
+            {
+              "id": "92141864-371f-4a2b-803c-4bd23b58b5eb",
+              "name": "userId",
+              "value": "={{ $json.userId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "164e4bf0-42cc-4d2f-9dd0-55f62dd1b9f4",
+      "name": "join_settings",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -1820,
+        20
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $input.first().json.output\nconst keys = Object.keys(output)\nlet mensaje = escapeMarkdownV2(\"¡Teminé! 💪 ¡Mira qué opciones tan geniales encontramos para ti! ✨ Aquí te dejo la info con precios y detalles:\\n\\n\");\n\n// Función para verificar si un objeto tiene todas las claves necesarias\nfunction isComplete(item) {\n    return item.precio && item.nombre && item.url && item.domain && item.detalles;\n}\nfunction getEmojiNum(num) {\n  const emoji = ['1️⃣', '2️⃣', '3️⃣']\n  return emoji[num - 1] ?? ''\n}\nfunction escapeMarkdownV2(text) {\n  return text.replace(/[_*\\[\\]()~`>#+\\-=|{}.!]/g, match => '\\\\' + match);\n}\n\n// Iterar sobre los precios\nfor (let i = 1; i <= keys.length; i++) {\n    const itemKey = `precio${i}`;\n    const item = output[itemKey];\n\n    if (item && isComplete(item)) {\n        mensaje += `${getEmojiNum(i)} *${escapeMarkdownV2(item.nombre)}*\\n`;\n        mensaje += `*Precio:* $${escapeMarkdownV2(`${item.precio}`)}\\n`;\n        mensaje += `*Web*: ${escapeMarkdownV2(item.domain).replace('www.', '')}\\n`;\n        mensaje += `👉 [CONSIGUELO AQUÍ](${item.url})\\n\\n`;\n       // mensaje += `**Detalles:** ${item.detalles}\\n\\n`;\n    }\n}\n\nmensaje += escapeMarkdownV2(\"¡Espero que encuentres lo que buscas! 😉\");\n\nreturn { text: mensaje };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        120,
+        -20
+      ],
+      "id": "a03454e5-0aea-4e78-bd8f-b2d572742f87",
+      "name": "purge_prices"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d607140d-f2ba-43a0-a33d-af2d8b95f92a",
+              "name": "output",
+              "value": "={{ $json.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        660,
+        220
+      ],
+      "id": "cb182607-d76f-4b02-bb5d-1e5458fba2f9",
+      "name": "map_output_n8n_channel"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"precio1\": {\n      \"properties\": {\n        \"nombre\": {\n            \"type\": [\"string\"]\n        },\n        \"precio\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"url\": [\"string\"],\n        \"domain\":  [\"string\"],\n        \"detalles\":  [\"string\"]\n      }\n    },\n    \"precio2\": {\n      \"properties\": {\n        \"nombre\": {\n            \"type\": [\"string\"]\n        },\n        \"precio\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"url\": [\"string\"],\n        \"domain\":  [\"string\"],\n        \"detalles\":  [\"string\"]\n      }\n    },\n    \"precio3\": {\n      \"properties\": {\n        \"nombre\": {\n            \"type\": [\"string\"]\n        },\n        \"precio\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"url\": [\"string\"],\n        \"domain\":  [\"string\"],\n        \"detalles\":  [\"string\"]\n      }\n    }\n  },\n  \"required\": [\"precio1\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        460
+      ],
+      "id": "76dbb071-5ac4-4e60-b232-46d328f0caf5",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Get result of brave search to the provide query(q).",
+        "url": "https://api.search.brave.com/res/v1/web/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "parametersQuery": {
+          "values": [
+            {
+              "name": "q"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "parametersHeaders": {
+          "values": [
+            {
+              "name": "Accept",
+              "valueProvider": "fieldValue",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept-Encoding",
+              "valueProvider": "fieldValue",
+              "value": "gzip"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        460
+      ],
+      "id": "73194597-86b9-4779-9d48-1a74ec82c5d3",
+      "name": "brave_search_results",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "z3mfaR0eTztFYlRz",
+          "name": "Search api key"
+        },
+        "httpHeaderAuth": {
+          "id": "NwMhZgAJkn2Ck3if",
+          "name": "Brave header auth api"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "SendTyping": {
+      "main": [
+        [
+          {
+            "node": "telegramChatSettings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8nChatSettings": {
+      "main": [
+        []
+      ]
+    },
+    "telegramChatSettings": {
+      "main": [
+        [
+          {
+            "node": "join_settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8nInput": {
+      "main": [
+        [
+          {
+            "node": "n8nChatSettings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "input": {
+      "main": [
+        [
+          {
+            "node": "SendTyping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "iterations_loop",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "save_chat_history",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "get_chat_history",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "iterations_loop",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "join_data_ready_case": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "join_data_no_ready_case": {
+      "main": [
+        [
+          {
+            "node": "response_channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "isReady": {
+      "main": [
+        [
+          {
+            "node": "join_data_ready_case",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "delete_history_iteractions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "join_data_no_ready_case",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "response_channel": {
+      "main": [
+        [
+          {
+            "node": "TelegramResponseLoop",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "n8n_response_loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_chat_history": {
+      "main": [
+        [
+          {
+            "node": "iterations_loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "save_chat_history": {
+      "main": [
+        [
+          {
+            "node": "isReady",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "iterations_loop": {
+      "main": [
+        [
+          {
+            "node": "save_chat_history",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "purge_prices",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "final_channel_select",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "google_search_results": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_markdow_data": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_all_allow_urls_by_city": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update_state_of_process": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "final_channel_select": {
+      "main": [
+        [
+          {
+            "node": "Telegram2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "map_output_n8n_channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "join_settings": {
+      "main": [
+        [
+          {
+            "node": "get_chat_history",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "purge_prices": {
+      "main": [
+        [
+          {
+            "node": "final_channel_select",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "brave_search_results": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {
+    "input": [
+      {
+        "update_id": 215627286,
+        "message": {
+          "message_id": 402,
+          "from": {
+            "id": 1212282583,
+            "is_bot": false,
+            "first_name": "Lagc",
+            "username": "lagblue",
+            "language_code": "en"
+          },
+          "chat": {
+            "id": 1212282583,
+            "first_name": "Lagc",
+            "username": "lagblue",
+            "type": "private"
+          },
+          "date": 1746147083,
+          "text": "vitamina c de 500 mg en tabletas en guadalajara"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4d4b6b0f080fecf15bb3a31318aa7fbd1c935f347a11f70ddc4a1246674c39c1"
+  }
+}

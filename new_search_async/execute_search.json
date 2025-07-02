@@ -1,0 +1,1502 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "pharmacy_for_city",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "city",
+              "condition": "like",
+              "keyValue": "={{ $json.city.toLowerCase() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -820,
+        380
+      ],
+      "id": "8ecf25f0-b281-4b95-bad8-e558ac6021a4",
+      "name": "allow_domains",
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "hmzt7OOgWwOH4ZDl",
+          "name": "Supabase Bara Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "async_search",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "query_full",
+              "fieldValue": "={{ $('call_trigger').first().json.query_full }}"
+            },
+            {
+              "fieldId": "result_prices",
+              "fieldValue": "={{ $json.text }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "success"
+            },
+            {
+              "fieldId": "medicine_name",
+              "fieldValue": "={{ $('call_trigger').first().json.medicine_name }}"
+            },
+            {
+              "fieldId": "dosage",
+              "fieldValue": "={{ $('call_trigger').first().json.dosage.replaceAll(' ', '') }}"
+            },
+            {
+              "fieldId": "city",
+              "fieldValue": "={{ $('call_trigger').first().json.city }}"
+            },
+            {
+              "fieldId": "presentation",
+              "fieldValue": "={{ $('call_trigger').first().json.presentation }}"
+            },
+            {
+              "fieldId": "medicine_category",
+              "fieldValue": "={{ $('call_trigger').first().json.medicine_category }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2620,
+        460
+      ],
+      "id": "d9756efa-a509-419c-91f1-a5545cef5afd",
+      "name": "Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "hmzt7OOgWwOH4ZDl",
+          "name": "Supabase Bara Médica Asistente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.searchapi.io/api/v1/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $('call_trigger').first().json.query_full }}"
+            },
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "location",
+              "value": "={{ $('call_trigger').item.json.city }}"
+            },
+            {
+              "name": "num",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        140
+      ],
+      "id": "c19b0795-be03-4ae9-8864-54072a47c693",
+      "name": "Search api request",
+      "retryOnFail": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "z3mfaR0eTztFYlRz",
+          "name": "Search api key"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://api.search.brave.com/res/v1/web/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $('call_trigger').item.json.query_full }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        360
+      ],
+      "id": "3c6f0749-97f3-49d5-bb5d-176b5b153496",
+      "name": "brave api request",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "NwMhZgAJkn2Ck3if",
+          "name": "Brave header auth api"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        640,
+        300
+      ],
+      "id": "d8f4687d-7ca1-4ee7-b00e-caf7d9e6b8ad",
+      "name": "merge_queries"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const regex = /^(https?:\\/\\/)(www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(\\/[^\\/\\s].*)?$/\nconst googleSearch = $input.item.json?.organic_results?.length\n  ? $input.item.json.organic_results\n  : []\nconst braveSearch = $input.item.json?.web?.results?.length\n  ? $input.item.json.web.results\n  : []\nconst googleUrls = googleSearch.map((search) => search.link)\nconst braveUrls = braveSearch.map((search) => search.url)\nconst urls = [...googleUrls, ...braveUrls]\nconst filterUrls = urls.filter((url) => regex.test(url))\n\nreturn { filterUrls };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        220
+      ],
+      "id": "4db82584-8600-4536-9839-4d27e2530765",
+      "name": "extract_urls"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        640
+      ],
+      "id": "7f6bddcc-9b42-4e39-924a-cd5b255d98dc",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"url\": {\n      \"type\": [\"string\", \"null\"]\n    },\n    \"precio\": {\n      \"type\": [\"number\", \"null\"]\n    },\n    \"nombre\": {\n      \"type\": [\"string\", \"null\"]\n    },\n    \"detalles\": {\n      \"type\": [\"string\", \"null\"]\n    }\n  },\n  \"required\": [\"precio\", \"nombre\", \"url\", \"detalles\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1640,
+        640
+      ],
+      "id": "add51d47-0e17-44a5-8811-fa466227c98c",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "success",
+        "options": {
+          "destinationFieldName": "result"
+        }
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        240
+      ],
+      "id": "481fe831-f7ad-4bc1-90fb-333d0f338b0a",
+      "name": "create_item_url_mdData"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={\n  \"url\": \"{{ $json.result.url }}\",\n  \"mdData\": \"{{ $json.result.data }}\"\n}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=# Indentidad\nEres capas de seguir las reglas defenidas y executar las tareas en base a tu capacidades\n\n# Tarea\n- Puedes extraer del markdown (mdData), el precio y el nombre del medicamento.\n\n# Capacidades\n- Entiendes markdown perfectamente\n- Puedes extraer precio y nombre de datos markdown\n- Encuentras y agregas detalles relevantes relacionados con el medicamento (promocion, planes al que aplica, disponibilidad, etc)\n\n# Reglas que debes seguir:\n- Solo procesa los datos suministrados.\n- NO busques en internet por mas resultados o comparaciones.\n- No agregas en los detalles data no relacionada con el precio y la ciudad: {{ $('call_trigger').first().json.city }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        1460,
+        460
+      ],
+      "id": "9b33d991-f509-44be-aca3-cc6c683b430a",
+      "name": "extract_price_name",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2280,
+        480
+      ],
+      "id": "372ad513-b139-4667-932b-5961f653fa40",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZICTu31ixxyJPYNY",
+          "name": "Google Gemini Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('remove_null_of_model_response').item.json.result }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=#Identidad\nEres un asistente capaz de comparar, extraer precios y entregar el formato de salida solicitado.\n\n# Tarea\nCompara y extrae los tres precios mas baratos de entre los diferentes items proporcionados\n\n# Ciudad\n- {{ $('call_trigger').first().json.city }}\n\nCiudad: {{ $('call_trigger').first().json.city }}\n\n# Reglas a seguir\n- Incluye en la respuesta los detalles.\n- Por favor incluye el dominio (domain).\n- No repitas los precios.\n- NO busques en internet.\n- Limita a comparar los datos suministrados.\n- no extraer, ni comparar precios que no este en moneda local de la ciudad.\n- Agrega la URL del medicamento.\n- Entrega el output solicitado.\n- El input de salida debe tener sus key en lowercase."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        2180,
+        280
+      ],
+      "id": "5dde4120-e736-42b8-98bd-93b740436cb9",
+      "name": "compare_prices",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"precio1\": {\n      \"properties\": {\n        \"nombre\": {\n            \"type\": [\"string\"]\n        },\n        \"precio\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"url\": [\"string\"],\n        \"domain\":  [\"string\"],\n        \"detalles\":  [\"string\"]\n      }\n    },\n    \"precio2\": {\n      \"properties\": {\n        \"nombre\": {\n            \"type\": [\"string\"]\n        },\n        \"precio\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"url\": [\"string\"],\n        \"domain\":  [\"string\"],\n        \"detalles\":  [\"string\"]\n      }\n    },\n    \"precio3\": {\n      \"properties\": {\n        \"nombre\": {\n            \"type\": [\"string\"]\n        },\n        \"precio\": {\n          \"type\": [\"string\", \"null\"]\n        },\n        \"url\": [\"string\"],\n        \"domain\":  [\"string\"],\n        \"detalles\":  [\"string\"]\n      }\n    }\n  },\n  \"required\": [\"precio1\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        2440,
+        480
+      ],
+      "id": "31f8d84f-d2f8-4412-9839-97b833b03cb5",
+      "name": "Structured Output Parser3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const filterUrl = $('extract_urls').first().json.filterUrls\nconst ourUrlsByCity = $('allow_domains').all()\nconst newFilterUrlsResult = filterUrl.filter((webUrl) => {\n  return ourUrlsByCity.some((allowUrl) => \n    webUrl.includes(allowUrl.json.url)\n  )\n})\n\nreturn { allowUrls: newFilterUrlsResult }"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        560
+      ],
+      "id": "ec535fcd-256c-48d8-ad85-b774fe0f67ae",
+      "name": "filter_by_allow_urls"
+    },
+    {
+      "parameters": {
+        "jsCode": "const noNulls = $input.all().reduce((acc, el, idx) => {\n  if (\n    el.json.output.url &&\n    el.json.output.precio &&\n    el.json.output.nombre &&\n    el.json.output.detalles\n  ) {\n    const regex = /^(https?:\\/\\/)?([^\\/\\?\\#]+)/i;\n    const url =  $(\"create_item_url_mdData\")\n        .all()[idx]\n        .json\n        .result\n        .url\n    const match = url.match(regex);\n    return [...acc, {\n      url,\n      precio: el.json.output.precio,\n      nombre: el.json.output.nombre,\n      domain: match?.[2] ?? undefined,\n      detalles: el.json.output.detalles\n    }]\n  }\n\n  return acc\n}, [])\n\nreturn { result: noNulls }"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        40
+      ],
+      "id": "25d7bd4b-14b0-473b-9529-7cf8ce7ab325",
+      "name": "remove_null_of_model_response",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('allow_domains').item.json }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "0c660416-0cca-4101-a0cc-bbfae971f1d5"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "true"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f02fd91f-6e9d-4dc4-88ea-2de81d327949",
+                    "leftValue": "={{ $('allow_domains').item.json }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "false"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -580,
+        380
+      ],
+      "id": "5325ad72-28d4-4cf1-aa91-a05afb502ac3",
+      "name": "isSupportCity"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "allowDomainCity",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        200
+      ],
+      "id": "7b19d04f-3784-4138-84b6-4f8bd55d898e",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://opryduogwuicddhqmgba.supabase.co/functions/v1/bara_price_multi_fetchs",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "urls",
+              "value": "={{ $('filter_by_allow_urls').first().json.allowUrls }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1140,
+        560
+      ],
+      "id": "4078b9a5-600e-4d0f-b1b3-da4f8f49fddc",
+      "name": "get_markdowns",
+      "executeOnce": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YGLOgacByF7Iy8bS",
+          "name": "Supabase Edge Function Header Auth"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "query_full"
+            },
+            {
+              "name": "medicine_name"
+            },
+            {
+              "name": "dosage"
+            },
+            {
+              "name": "city"
+            },
+            {
+              "name": "presentation"
+            },
+            {
+              "name": "medicine_category"
+            },
+            {
+              "name": "isNeedUserFeedback",
+              "type": "boolean"
+            },
+            {
+              "name": "chatId"
+            },
+            {
+              "name": "channel"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1080,
+        380
+      ],
+      "id": "79baba66-0bfd-4c0d-b56a-d968c2620104",
+      "name": "call_trigger"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.result.length.toBoolean() }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "b2ea201a-0eef-4193-8c3e-689315b25dff"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "true"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "eb7db19e-8250-4b36-bcde-b837971e6929",
+                    "leftValue": "={{ $json.result.length.toBoolean() }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "false",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "false"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1860,
+        320
+      ],
+      "id": "5727a1b7-9312-4e92-a8b4-ca815aa2183d",
+      "name": "result_in_data_switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $input.first().json.output\nconst keys = Object.keys(output)\nlet mensaje = escapeMarkdownV2(\"¡Teminé! 💪 ¡Mira qué opciones tan geniales encontramos para ti! ✨ Aquí te dejo la info con precios y detalles:\\n\\n\");\n\n// Función para verificar si un objeto tiene todas las claves necesarias\nfunction isComplete(item) {\n    return item.precio && item.nombre && item.url && item.domain && item.detalles;\n}\nfunction getEmojiNum(num) {\n  const emoji = ['1️⃣', '2️⃣', '3️⃣']\n  return emoji[num - 1] ?? ''\n}\nfunction escapeMarkdownV2(text) {\n  // return text.replace(/[_*\\[\\]()~`>#+\\-=|{}.!]/g, match => '\\\\' + match);\n  return text\n}\n\n// Iterar sobre los precios\nfor (let i = 1; i <= keys.length; i++) {\n    const itemKey = `precio${i}`;\n    const item = output[itemKey];\n\n    if (item && isComplete(item)) {\n        mensaje += `${getEmojiNum(i)} *${escapeMarkdownV2(item.nombre)}*\\n`;\n        mensaje += `*Precio:* $${escapeMarkdownV2(`${item.precio}`)}\\n`;\n        mensaje += `*Web*: ${escapeMarkdownV2(item.domain).replace('www.', '')}\\n`;\n        mensaje += `👉 [CONSIGUELO AQUÍ](${item.url})\\n\\n`;\n       // mensaje += `**Detalles:** ${item.detalles}\\n\\n`;\n    }\n}\n\nmensaje += escapeMarkdownV2(\"¡Espero que encuentres lo que buscas! 😉\");\n\nreturn { text: mensaje };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2620,
+        160
+      ],
+      "id": "82cd054b-517c-43be-96ce-726f49be2e95",
+      "name": "filter_null_create_message"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "jjGKh3PGLL7Z9D1a",
+          "mode": "list",
+          "cachedResultName": "Decide send user feedback"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "isNeedUserFeedback": "={{ $('call_trigger').item.json.isNeedUserFeedback }}",
+            "chatId": "={{ $('call_trigger').item.json.chatId }}",
+            "channel": "={{ $('call_trigger').item.json.channel }}",
+            "feedbackMessage": "🔎 Buscando en internet los mejores precios... 😎"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "isNeedUserFeedback",
+              "displayName": "isNeedUserFeedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "boolean"
+            },
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "feedbackMessage",
+              "displayName": "feedbackMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        440,
+        -60
+      ],
+      "id": "11802423-1552-41f6-915a-dd1aea2ceb2c",
+      "name": "notify_searching_prices"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "jjGKh3PGLL7Z9D1a",
+          "mode": "list",
+          "cachedResultName": "Decide send user feedback"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "isNeedUserFeedback": "={{ $('call_trigger').first().json.isNeedUserFeedback }}",
+            "chatId": "={{ $('call_trigger').first().json.chatId }}",
+            "channel": "={{ $('call_trigger').first().json.channel }}",
+            "feedbackMessage": "=⏳ Encontramos {{ $json.allowUrls.length }} fuentes relacionadas con tu busqueda. Voy a refinarlos para tí. Regalame unos minutos por favor. 🤩🙏"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "isNeedUserFeedback",
+              "displayName": "isNeedUserFeedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "boolean"
+            },
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "feedbackMessage",
+              "displayName": "feedbackMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1140,
+        240
+      ],
+      "id": "613370b3-d11f-4e14-b83b-a21d35e3bb7a",
+      "name": "feedback_encontramos_x_results"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "jjGKh3PGLL7Z9D1a",
+          "mode": "list",
+          "cachedResultName": "Decide send user feedback"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "isNeedUserFeedback": "={{ $('call_trigger').first().json.isNeedUserFeedback }}",
+            "chatId": "={{ $('call_trigger').first().json.chatId }}",
+            "channel": "={{ $('call_trigger').first().json.channel }}",
+            "feedbackMessage": "⏳ Estoy comparando los precios, ya casi termino, unos minutos mas por favor. 🤩"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "isNeedUserFeedback",
+              "displayName": "isNeedUserFeedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "boolean"
+            },
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "feedbackMessage",
+              "displayName": "feedbackMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1480,
+        40
+      ],
+      "id": "671c76e3-69ab-4bbb-9e0a-666a5a8adf40",
+      "name": "feedback_comparando_precios"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "jjGKh3PGLL7Z9D1a",
+          "mode": "list",
+          "cachedResultName": "Decide send user feedback"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "isNeedUserFeedback": "={{ $('call_trigger').first().json.isNeedUserFeedback }}",
+            "chatId": "={{ $('call_trigger').first().json.chatId }}",
+            "channel": "={{ $('call_trigger').first().json.channel }}",
+            "feedbackMessage": "Ya casi! 👏🏻 Estoy comparando los diferentes precios. 👍🏻"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "isNeedUserFeedback",
+              "displayName": "isNeedUserFeedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "boolean"
+            },
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "feedbackMessage",
+              "displayName": "feedbackMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2040,
+        100
+      ],
+      "id": "7a7731ae-1f82-426d-8065-b404b5fa8366",
+      "name": "feedback_ya_casi"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "jjGKh3PGLL7Z9D1a",
+          "mode": "list",
+          "cachedResultName": "Decide send user feedback"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "isNeedUserFeedback": "={{ $('call_trigger').first().json.isNeedUserFeedback }}",
+            "chatId": "={{ $('call_trigger').first().json.chatId }}",
+            "channel": "={{ $('call_trigger').first().json.channel }}",
+            "feedbackMessage": "Lo siento... Ha pesar de revisar arduamente no encontré precios relacionados con tu solicitud 😔."
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "isNeedUserFeedback",
+              "displayName": "isNeedUserFeedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "boolean"
+            },
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "feedbackMessage",
+              "displayName": "feedbackMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1860,
+        580
+      ],
+      "id": "80f07725-ebe5-411b-b5b5-f11f9e64cdc8",
+      "name": "no_price_in_allow_city"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "jjGKh3PGLL7Z9D1a",
+          "mode": "list",
+          "cachedResultName": "Decide send user feedback"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "isNeedUserFeedback": "={{ $('call_trigger').first().json.isNeedUserFeedback }}",
+            "chatId": "={{ $('call_trigger').first().json.chatId }}",
+            "channel": "={{ $('call_trigger').first().json.channel }}",
+            "feedbackMessage": "={{ $('filter_null_create_message').first().json.text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "isNeedUserFeedback",
+              "displayName": "isNeedUserFeedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "boolean"
+            },
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "feedbackMessage",
+              "displayName": "feedbackMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2880,
+        360
+      ],
+      "id": "d99c17e7-e1f9-4541-bb36-3379a14c87b8",
+      "name": "feedback_final_message"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4f054574-031c-4b5c-9155-d71e0eaad0e9",
+              "leftValue": "={{ $('call_trigger').first().json.isNeedUserFeedback }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -360,
+        480
+      ],
+      "id": "01fc5d43-4021-4470-b971-ab44ee009243",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002671971068",
+        "text": "=🤯 La busqueda asincronica no encontró resultados para la query ▶️{{ $('call_trigger').first().json.query_full }}◀️ porque la ciudad ▶️{{ $('call_trigger').first().json.city }}◀️ no tiene dominios permitidos\\.",
+        "additionalFields": {
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -40,
+        580
+      ],
+      "id": "a1f65ff0-98f7-4653-b100-be5ad6900132",
+      "name": "Telegram",
+      "webhookId": "1652ad49-e753-4eec-8ff0-668e33028efb",
+      "credentials": {
+        "telegramApi": {
+          "id": "dSR9LYvEYxm8bYqQ",
+          "name": "Telegram Bara Médica asistente DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-1002671971068",
+        "text": "=🤯 La busqueda asincrónica para la query ▶️{{ $('call_trigger').first().json.query_full }}◀️ no arrojó precios porque el llm no los pudo deducir o los resultado no contenian informacion útil\\.",
+        "additionalFields": {
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2100,
+        600
+      ],
+      "id": "fa12999d-0f04-4ffc-86ab-aa71de6bf8ce",
+      "name": "Telegram1",
+      "webhookId": "1652ad49-e753-4eec-8ff0-668e33028efb",
+      "credentials": {
+        "telegramApi": {
+          "id": "dSR9LYvEYxm8bYqQ",
+          "name": "Telegram Bara Médica asistente DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "jjGKh3PGLL7Z9D1a",
+          "mode": "list",
+          "cachedResultName": "Decide send user feedback"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "isNeedUserFeedback": "={{ $('call_trigger').item.json.isNeedUserFeedback }}",
+            "chatId": "={{ $('call_trigger').item.json.chatId }}",
+            "channel": "={{ $('call_trigger').item.json.channel }}",
+            "feedbackMessage": "😅 Lo siento... No hay dominios soportados para la ciudad mencionada."
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "isNeedUserFeedback",
+              "displayName": "isNeedUserFeedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "boolean"
+            },
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "feedbackMessage",
+              "displayName": "feedbackMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -40,
+        380
+      ],
+      "id": "e8b67aa9-5faf-4d83-b84b-7bc61996aa3e",
+      "name": "no_coverage"
+    }
+  ],
+  "connections": {
+    "allow_domains": {
+      "main": [
+        [
+          {
+            "node": "isSupportCity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "main": [
+        [
+          {
+            "node": "feedback_final_message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search api request": {
+      "main": [
+        [
+          {
+            "node": "merge_queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "brave api request": {
+      "main": [
+        [
+          {
+            "node": "merge_queries",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "merge_queries": {
+      "main": [
+        [
+          {
+            "node": "extract_urls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extract_urls": {
+      "main": [
+        [
+          {
+            "node": "filter_by_allow_urls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "extract_price_name",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "extract_price_name",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_item_url_mdData": {
+      "main": [
+        [
+          {
+            "node": "extract_price_name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extract_price_name": {
+      "main": [
+        [
+          {
+            "node": "remove_null_of_model_response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "compare_prices",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "compare_prices": {
+      "main": [
+        [
+          {
+            "node": "filter_null_create_message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser3": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "compare_prices",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter_by_allow_urls": {
+      "main": [
+        [
+          {
+            "node": "feedback_encontramos_x_results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "remove_null_of_model_response": {
+      "main": [
+        [
+          {
+            "node": "result_in_data_switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "isSupportCity": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "brave api request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search api request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "notify_searching_prices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_markdowns": {
+      "main": [
+        [
+          {
+            "node": "create_item_url_mdData",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "feedback_comparando_precios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call_trigger": {
+      "main": [
+        [
+          {
+            "node": "allow_domains",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "result_in_data_switch": {
+      "main": [
+        [
+          {
+            "node": "compare_prices",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "feedback_ya_casi",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "no_price_in_allow_city",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "filter_null_create_message": {
+      "main": [
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "notify_searching_prices": {
+      "main": [
+        []
+      ]
+    },
+    "feedback_encontramos_x_results": {
+      "main": [
+        [
+          {
+            "node": "get_markdowns",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "no_price_in_allow_city": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "no_coverage",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "no_coverage": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4d4b6b0f080fecf15bb3a31318aa7fbd1c935f347a11f70ddc4a1246674c39c1"
+  }
+}
